@@ -1,0 +1,6 @@
+{
+  "name": "FlyKaaba - Vehicle Booking & Travel Agency Marketplace",
+  "description": "Discover and book vehicles across Saudi Arabia for airport transfers, city-to-city travel, and Ziyarat journeys with verified transport companies.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

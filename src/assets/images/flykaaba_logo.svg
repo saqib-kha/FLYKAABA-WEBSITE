@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" fill="none" className="h-full w-auto">
+  <defs>
+    <!-- Rich gold gradient for Kiswah calligraphy arms -->
+    <linearGradient id="kiswahGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5D77F" />
+      <stop offset="35%" stop-color="#D4AF37" />
+      <stop offset="70%" stop-color="#AA821C" />
+      <stop offset="100%" stop-color="#E6C665" />
+    </linearGradient>
+
+    <!-- Metallic shine for Kaaba door and belt -->
+    <linearGradient id="goldHizam" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFDF73" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#F3CE5A" />
+    </linearGradient>
+
+    <!-- Calligraphy pattern on upper arm -->
+    <pattern id="calligraphyPattern" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="2" x2="16" y2="2" stroke="#7A580F" stroke-width="1.2" stroke-dasharray="3,1,2,1" />
+      <line x1="0" y1="6" x2="16" y2="6" stroke="#926D19" stroke-width="1.5" stroke-dasharray="2,2,4,1" />
+      <line x1="0" y1="10" x2="16" y2="10" stroke="#664706" stroke-width="1.2" stroke-dasharray="4,1,1,2" />
+      <line x1="0" y1="14" x2="16" y2="14" stroke="#8C6615" stroke-width="1.4" stroke-dasharray="1,2,3,2" />
+    </pattern>
+  </defs>
+
+  <!-- 1. "Fly" text in heavy black sans-serif font matching the original logo -->
+  <text 
+    x="0" 
+    y="66" 
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+    font-size="64" 
+    font-weight="900" 
+    letter-spacing="-1.5px" 
+    fill="#000000"
+  >Fly</text>
+
+  <!-- 2. Custom Stylized Islamic Letter "K" -->
+  <g transform="translate(86, 0)">
+    
+    <!-- Vertical Stem of "K" (Black Kiswah Column) -->
+    <rect x="0" y="16" width="12" height="50" rx="1" fill="#0D0D0D" />
+    
+    <!-- Gold Middle Hizam Belt on Vertical Stem -->
+    <rect x="-0.5" y="36.5" width="13" height="9" fill="url(#goldHizam)" stroke="#8F6E1C" stroke-width="0.5" />
+    <!-- Islamic Diamond Ornament inside Central Belt -->
+    <polygon points="6,37.5 9.5,41 6,44.5 2.5,41" fill="#1A1A1A" stroke="#F5D77F" stroke-width="0.8" />
+
+    <!-- Upper Diagonal Arm (Gold with Embroidered Arabic Calligraphy) -->
+    <g>
+      <!-- Base Gold Polygon -->
+      <polygon 
+        points="10,41 20,31 43,8 54,19 28,45 10,41" 
+        fill="url(#kiswahGold)" 
+        stroke="#8F6E1C" 
+        stroke-width="0.8" 
+      />
+      <!-- Calligraphy Layer -->
+      <polygon 
+        points="10,41 20,31 43,8 54,19 28,45 10,41" 
+        fill="url(#calligraphyPattern)" 
+        opacity="0.8" 
+      />
+      <!-- Gold Rim Edge -->
+      <line x1="20" y1="31" x2="43" y2="8" stroke="#FFEBA3" stroke-width="1.2" />
+      <line x1="10" y1="41" x2="28" y2="45" stroke="#7A580F" stroke-width="1" />
+    </g>
+
+    <!-- Lower Diagonal Arm (Gold with Embroidered Arabic Calligraphy) -->
+    <g>
+      <!-- Base Gold Polygon -->
+      <polygon 
+        points="10,41 28,37 54,63 43,74 20,51 10,41" 
+        fill="url(#kiswahGold)" 
+        stroke="#8F6E1C" 
+        stroke-width="0.8" 
+      />
+      <!-- Calligraphy Layer -->
+      <polygon 
+        points="10,41 28,37 54,63 43,74 20,51 10,41" 
+        fill="url(#calligraphyPattern)" 
+        opacity="0.8" 
+      />
+      <!-- Gold Rim Edge -->
+      <line x1="28" y1="37" x2="54" y2="63" stroke="#FFEBA3" stroke-width="1.2" />
+      <line x1="20" y1="51" x2="43" y2="74" stroke="#7A580F" stroke-width="1" />
+    </g>
+
+    <!-- 3D Isometric Holy Kaaba atop the upper diagonal arm -->
+    <g transform="translate(41, -4)">
+      <!-- Marble base (Shadharwan) -->
+      <polygon points="12,19.5 21,23.5 12,25.5 3,21.5" fill="#E8E6E1" />
+      
+      <!-- Front-Left Wall (Black Kiswah) -->
+      <polygon points="3,8 12,12 12,23 3,19" fill="#111111" />
+      
+      <!-- Front-Left Wall Gold Belt (Hizam) -->
+      <polygon points="3,10.5 12,14.5 12,16.5 3,12.5" fill="url(#goldHizam)" />
+      
+      <!-- Golden Door of the Holy Kaaba (Bab al-Kaaba) -->
+      <polygon points="7,14 10.5,15.5 10.5,21.5 7,20" fill="#FFD700" stroke="#9E7618" stroke-width="0.4" />
+      <!-- Door lock / latch detail -->
+      <circle cx="8.5" cy="18" r="0.6" fill="#422E06" />
+
+      <!-- Front-Right Wall (Shadowed Black Kiswah) -->
+      <polygon points="12,12 21,8 21,19 12,23" fill="#242424" />
+      
+      <!-- Front-Right Wall Gold Belt (Hizam) -->
+      <polygon points="12,14.5 21,10.5 21,12.5 12,16.5" fill="#C5A059" />
+
+      <!-- Kaaba Roof (White/Light Marble with Inner Parapet) -->
+      <polygon points="12,4 21,8 12,12 3,8" fill="#F4F3EF" stroke="#DDDBCF" stroke-width="0.5" />
+      <!-- Inner roof recessed panel -->
+      <polygon points="12,5.5 19,8.5 12,11 5,8" fill="#D3D0C5" />
+
+      <!-- Golden corner lantern / Mezab accent -->
+      <circle cx="12" cy="12" r="0.8" fill="#FFEBA3" />
+    </g>
+
+  </g>
+
+  <!-- 3. "aaba" text in heavy black sans-serif font matching the original logo -->
+  <text 
+    x="146" 
+    y="66" 
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" 
+    font-size="64" 
+    font-weight="900" 
+    letter-spacing="-1.5px" 
+    fill="#000000"
+  >aaba</text>
+</svg>

@@ -1,0 +1,586 @@
+/**
+ * FlyKaaba - Vehicle Booking & Travel Agency Marketplace
+ * Core Application Component meticulously reproducing the reference screenshots.
+ */
+
+import React, { useState, useEffect } from 'react';
+import { Navbar } from './components/Navbar';
+import { HeroSection, SearchParams } from './components/HeroSection';
+import { CarCategoriesSection } from './components/CarCategoriesSection';
+import { VerifiedAgenciesSection } from './components/VerifiedAgenciesSection';
+import { FeaturedVehiclesSection } from './components/FeaturedVehiclesSection';
+import { WhyPilgrimsTrustSection } from './components/WhyPilgrimsTrustSection';
+import { FaqSection } from './components/FaqSection';
+import { BlogSection } from './components/BlogSection';
+import { Footer } from './components/Footer';
+
+// Modals & Supporting Views
+import { SearchResultsModal } from './components/SearchResultsModal';
+import { VehicleDetailsModal } from './components/VehicleDetailsModal';
+import { AgencyDetailsModal } from './components/AgencyDetailsModal';
+import { AllAgenciesModal } from './components/AllAgenciesModal';
+import { AllVehiclesModal } from './components/AllVehiclesModal';
+import { CompanyRegistrationModal } from './components/CompanyRegistrationModal';
+import { RoutesModal } from './components/RoutesModal';
+import { ZiyaratModal } from './components/ZiyaratModal';
+import { BlogReaderModal } from './components/BlogReaderModal';
+import { AuthModal } from './components/AuthModal';
+import { MyBookingsModal } from './components/MyBookingsModal';
+import { HowItWorksModal } from './components/HowItWorksModal';
+import { CategoryPageView } from './components/CategoryPageView';
+import { BookingFlowView } from './components/BookingFlowView';
+import { AllCompaniesPageView } from './components/AllCompaniesPageView';
+import { CompanyProfilePageView } from './components/CompanyProfilePageView';
+import { SearchVehiclesPageView } from './components/SearchVehiclesPageView';
+import { HowItWorksPageView } from './components/HowItWorksPageView';
+import { RoutesPageView } from './components/RoutesPageView';
+
+// Mock Data
+import {
+  TRAVEL_AGENCIES,
+  FEATURED_VEHICLES,
+  BLOG_POSTS,
+  TravelAgency,
+  Vehicle,
+  BlogPost,
+  ZiyaratDestination,
+  BookingRecord,
+  agencyAlfaisalCover,
+} from './data/mockData';
+
+export default function App() {
+  // Application Data States
+  const [agencies, setAgencies] = useState<TravelAgency[]>(() => {
+    const saved = localStorage.getItem('flykaaba_agencies');
+    return saved ? JSON.parse(saved) : TRAVEL_AGENCIES;
+  });
+
+  const [vehicles, setVehicles] = useState<Vehicle[]>(() => {
+    const saved = localStorage.getItem('flykaaba_vehicles');
+    return saved ? JSON.parse(saved) : FEATURED_VEHICLES;
+  });
+
+  const [bookings, setBookings] = useState<BookingRecord[]>(() => {
+    const saved = localStorage.getItem('flykaaba_bookings');
+    if (saved) return JSON.parse(saved);
+    // Initial sample booking to demonstrate functionality
+    return [
+      {
+        id: 'book-init-1',
+        referenceNumber: 'FK-839210',
+        vehicleName: 'GMC Yukon 2023',
+        vehicleCategory: 'SUV',
+        companyName: 'Riyadh Fleet Co',
+        pickupCity: 'Jeddah Airport (JED)',
+        destinationCity: 'Makkah',
+        travelDate: '2026-10-25',
+        pickupTime: '14:30',
+        tripType: 'one-way',
+        passengers: 4,
+        totalPriceSar: 450,
+        customerName: 'Demo Pilgrim',
+        customerPhone: '+966 50 123 4567',
+        customerEmail: 'pilgrim@example.com',
+        status: 'Confirmed',
+        createdAt: 'Oct 17, 2026',
+      },
+    ];
+  });
+
+  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; role: string } | null>(() => {
+    const saved = localStorage.getItem('flykaaba_user');
+    return saved ? JSON.parse(saved) : { name: 'Sara', email: 'sara@example.com', role: 'Verified Traveler' };
+  });
+
+  // Modal / View Controls
+  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'vehicles' | 'how-it-works'>('home');
+  const [selectedCategoryPage, setSelectedCategoryPage] = useState<string | null>(null);
+  const [bookingVehicle, setBookingVehicle] = useState<Vehicle | null>(null);
+  const [searchResults, setSearchResults] = useState<SearchParams | null>(null);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [vehicleModalStep, setVehicleModalStep] = useState<'details' | 'booking-form'>('details');
+  const [selectedAgency, setSelectedAgency] = useState<TravelAgency | null>(null);
+  const [selectedZiyarat, setSelectedZiyarat] = useState<ZiyaratDestination | null>(null);
+  const [selectedBlogPost, setSelectedBlogPost] = useState<BlogPost | null>(null);
+  
+  const [showAllAgenciesModal, setShowAllAgenciesModal] = useState(false);
+  const [showAllVehiclesModal, setShowAllVehiclesModal] = useState(false);
+  const [initialCategoryFilter, setInitialCategoryFilter] = useState('All');
+  const [showCompanyRegModal, setShowCompanyRegModal] = useState(false);
+  const [showRoutesModal, setShowRoutesModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState<'login' | 'signup' | null>(null);
+  const [showMyBookingsModal, setShowMyBookingsModal] = useState(false);
+  const [showHowItWorksModal, setShowHowItWorksModal] = useState<string | null>(null);
+
+  // Sync to localStorage
+  useEffect(() => {
+    localStorage.setItem('flykaaba_bookings', JSON.stringify(bookings));
+  }, [bookings]);
+
+  useEffect(() => {
+    localStorage.setItem('flykaaba_agencies', JSON.stringify(agencies));
+  }, [agencies]);
+
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem('flykaaba_user', JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem('flykaaba_user');
+    }
+  }, [currentUser]);
+
+  // Handlers
+  const handleSearch = (params: SearchParams) => {
+    setSearchResults(params);
+  };
+
+  const handleSelectCategory = (categoryTitle: string) => {
+    setBookingVehicle(null);
+    setSelectedAgency(null);
+    setActiveView('home');
+    setSelectedCategoryPage(categoryTitle);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenAllCompanies = () => {
+    setActiveView('agencies');
+    setSelectedAgency(null);
+    setSelectedCategoryPage(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectAgency = (agency: TravelAgency) => {
+    setSelectedAgency(agency);
+    setActiveView('agencies');
+    setSelectedCategoryPage(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleGoHome = () => {
+    setActiveView('home');
+    setSelectedCategoryPage(null);
+    setBookingVehicle(null);
+    setSelectedAgency(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenAllVehicles = (cat: string = 'All') => {
+    setInitialCategoryFilter(cat);
+    setActiveView('vehicles');
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenHowItWorks = () => {
+    setActiveView('how-it-works');
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenRoutes = () => {
+    setActiveView('routes');
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenVehicleDetails = (vehicle: Vehicle) => {
+    setSelectedVehicle(vehicle);
+    setVehicleModalStep('details');
+  };
+
+  const handleOpenVehicleBooking = (vehicle: Vehicle) => {
+    setSelectedVehicle(null);
+    setBookingVehicle(vehicle);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleConfirmBooking = (newBooking: BookingRecord) => {
+    setBookings(prev => [newBooking, ...prev]);
+  };
+
+  const handleCancelBooking = (bookingId: string) => {
+    setBookings(prev => prev.filter(b => b.id !== bookingId));
+  };
+
+  const handleCompanyRegistered = (newCompanyName: string) => {
+    // Optionally append newly registered agency
+    const newAgency: TravelAgency = {
+      id: 'agency-' + Date.now(),
+      name: newCompanyName,
+      slug: newCompanyName.toLowerCase().replace(/\s+/g, '-'),
+      city: 'Makkah',
+      isVerified: true,
+      coverImage: agencyAlfaisalCover,
+      avatarImage: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=100&auto=format&fit=crop&q=80',
+      rating: 5.0,
+      reviewCount: 1,
+      phone: '+966 50 999 8888',
+      whatsapp: '+966509998888',
+      email: 'contact@' + newCompanyName.toLowerCase().replace(/\s+/g, '') + '.sa',
+      description: 'Official licensed transportation provider with verified credentials across Saudi Arabia.',
+      licenseNumber: 'KSA-MOT-PENDING',
+      foundedYear: 2026,
+      vehicleCount: 8,
+      featuredVehicles: [],
+    };
+    setAgencies(prev => [newAgency, ...prev]);
+  };
+
+  const handleAddReview = (agencyId: string, rating: number, comment: string) => {
+    setAgencies(prev => prev.map(a => {
+      if (a.id === agencyId) {
+        const newCount = a.reviewCount + 1;
+        const currentTotal = a.rating * a.reviewCount;
+        const newRating = (currentTotal + rating) / newCount;
+        return {
+          ...a,
+          reviewCount: newCount,
+          rating: Number(newRating.toFixed(1)),
+        };
+      }
+      return a;
+    }));
+  };
+
+  const handleSelectRoute = (fromCity: string, toCity: string) => {
+    setShowRoutesModal(false);
+    handleSearch({
+      tripType: 'one-way',
+      pickupCity: fromCity,
+      dropoffCity: toCity,
+      travelDate: new Date().toISOString().split('T')[0],
+      pickupTime: '10:00',
+    });
+  };
+
+  const handleBookZiyarat = (ziyarat: ZiyaratDestination) => {
+    setSelectedZiyarat(null);
+    // Open vehicle search for that city
+    handleSearch({
+      tripType: 'one-way',
+      pickupCity: ziyarat.city,
+      dropoffCity: ziyarat.title,
+      travelDate: new Date().toISOString().split('T')[0],
+      pickupTime: '08:30',
+    });
+  };
+
+  const handleQuickLink = (linkTitle: string) => {
+    if (linkTitle === 'Blogs') {
+      window.scrollTo({ top: document.body.scrollHeight - 1600, behavior: 'smooth' });
+    } else if (linkTitle === 'Cities') {
+      handleOpenRoutes();
+    } else if (linkTitle === 'How It Works for Companies') {
+      setShowCompanyRegModal(true);
+    } else if (linkTitle === 'How It Works for Customers' || linkTitle === 'How Verification Works') {
+      handleOpenHowItWorks();
+    } else {
+      setShowHowItWorksModal(linkTitle);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-white text-[#111111] font-sans selection:bg-[#C9A01B]/20 selection:text-[#111111]">
+      
+      {/* Sticky Header / Navigation Bar matching Screenshot 1 */}
+      <Navbar
+        onOpenAgencies={handleOpenAllCompanies}
+        onOpenRoutes={handleOpenRoutes}
+        onSelectZiyarat={(z) => setSelectedZiyarat(z)}
+        onOpenListCompany={() => setShowCompanyRegModal(true)}
+        onOpenLogin={() => setShowAuthModal('login')}
+        onOpenSignup={() => setShowAuthModal('signup')}
+        currentUser={currentUser}
+        onLogout={() => setCurrentUser(null)}
+        onOpenMyBookings={() => setShowMyBookingsModal(true)}
+        activeView={activeView}
+        onGoHome={handleGoHome}
+      />
+
+      {/* Main Page Body */}
+      <main className="flex-1">
+        {bookingVehicle ? (
+          <BookingFlowView
+            vehicle={bookingVehicle}
+            agency={agencies.find(a => a.id === bookingVehicle.companyId)}
+            onGoHome={handleGoHome}
+            onBackToCategory={(category) => {
+              setBookingVehicle(null);
+              setSelectedCategoryPage(category);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onConfirmBooking={(booking) => {
+              handleConfirmBooking(booking);
+            }}
+            currentUser={currentUser}
+          />
+        ) : selectedCategoryPage ? (
+          <CategoryPageView
+            currentCategory={selectedCategoryPage}
+            onSelectCategory={(cat) => {
+              setSelectedCategoryPage(cat);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onGoHome={handleGoHome}
+            vehicles={vehicles}
+            agencies={agencies}
+            onBookVehicle={handleOpenVehicleBooking}
+            onSelectVehicle={handleOpenVehicleDetails}
+            onOpenSearch={() => {
+              setSelectedCategoryPage(null);
+              window.scrollTo({ top: 120, behavior: 'smooth' });
+            }}
+            onViewAllCategories={() => {
+              setSelectedCategoryPage(null);
+              window.scrollTo({ top: 600, behavior: 'smooth' });
+            }}
+          />
+        ) : activeView === 'agencies' ? (
+          selectedAgency ? (
+            <CompanyProfilePageView
+              agency={selectedAgency}
+              vehicles={vehicles}
+              allAgencies={agencies}
+              onBackToAgencies={() => {
+                setSelectedAgency(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onGoHome={handleGoHome}
+              onBookVehicle={handleOpenVehicleBooking}
+              onSelectVehicle={handleOpenVehicleDetails}
+              onSelectOtherAgency={(other) => {
+                setSelectedAgency(other);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          ) : (
+            <AllCompaniesPageView
+              agencies={agencies}
+              vehicles={vehicles}
+              onSelectAgency={handleSelectAgency}
+              onGoHome={handleGoHome}
+              onOpenListCompany={() => setShowCompanyRegModal(true)}
+            />
+          )
+        ) : activeView === 'vehicles' ? (
+          <SearchVehiclesPageView
+            vehicles={vehicles}
+            agencies={agencies}
+            onSelectVehicle={handleOpenVehicleDetails}
+            onBookVehicle={handleOpenVehicleBooking}
+            onGoHome={handleGoHome}
+            initialCategory={initialCategoryFilter}
+          />
+        ) : activeView === 'how-it-works' ? (
+          <HowItWorksPageView
+            onGoHome={handleGoHome}
+            onBrowseVehicles={() => handleOpenAllVehicles('All')}
+          />
+        ) : activeView === 'routes' ? (
+          <RoutesPageView
+            onGoHome={handleGoHome}
+            onBrowseAllVehicles={() => handleOpenAllVehicles('All')}
+            onSelectRoute={(fromCity, toCity) => {
+              handleSelectRoute(fromCity, toCity);
+            }}
+          />
+        ) : (
+          <>
+            {/* 1. Hero Section matching Screenshot 1 */}
+            <HeroSection
+              onSearch={handleSearch}
+              onNavigateToBlog={() => {
+                const blogElem = document.getElementById('blog-section');
+                if (blogElem) {
+                  blogElem.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            />
+
+            {/* 2. Car Categories Section matching Screenshot 2 */}
+            <CarCategoriesSection
+              onSelectCategory={handleSelectCategory}
+            />
+
+            {/* 3. Verified Travel Agencies Section matching Screenshots 2 & 3 */}
+            <VerifiedAgenciesSection
+              agencies={agencies}
+              onSelectAgency={handleSelectAgency}
+              onViewAllAgencies={handleOpenAllCompanies}
+            />
+
+            {/* 4. Featured Vehicles Section matching Screenshots 3 & 4 */}
+            <FeaturedVehiclesSection
+              vehicles={vehicles}
+              onSelectVehicle={handleOpenVehicleDetails}
+              onBookVehicle={handleOpenVehicleBooking}
+              onViewAllVehicles={() => handleOpenAllVehicles('All')}
+            />
+
+            {/* 5. Why Pilgrims Trust FlyKaaba Section matching Screenshots 4 & 5 */}
+            <WhyPilgrimsTrustSection
+              onHowItWorksClick={handleOpenHowItWorks}
+            />
+
+            {/* 6. Frequently Asked Questions Section matching Screenshot 6 */}
+            <FaqSection />
+
+            {/* 7. From Our Blog Section matching Screenshots 6 & 7 */}
+            <div id="blog-section">
+              <BlogSection
+                posts={BLOG_POSTS}
+                onSelectPost={(post) => setSelectedBlogPost(post)}
+                onViewAllPosts={() => setSelectedBlogPost(BLOG_POSTS[0])}
+              />
+            </div>
+          </>
+        )}
+      </main>
+
+      {/* 8. Footer matching Screenshot 8 */}
+      <Footer onQuickLinkClick={handleQuickLink} />
+
+      {/* ================= MODALS & ACTIVE OVERLAYS ================= */}
+
+      {/* Search Results Modal */}
+      {searchResults && (
+        <SearchResultsModal
+          searchParams={searchResults}
+          allVehicles={vehicles}
+          agencies={agencies}
+          onClose={() => setSearchResults(null)}
+          onSelectVehicle={handleOpenVehicleDetails}
+          onBookVehicle={handleOpenVehicleBooking}
+          onModifySearch={() => {
+            setSearchResults(null);
+            window.scrollTo({ top: 100, behavior: 'smooth' });
+          }}
+        />
+      )}
+
+      {/* Vehicle Details & Booking Modal */}
+      {selectedVehicle && (
+        <VehicleDetailsModal
+          vehicle={selectedVehicle}
+          initialStep={vehicleModalStep}
+          agency={agencies.find(a => a.id === selectedVehicle.companyId)}
+          onClose={() => setSelectedVehicle(null)}
+          onConfirmBooking={handleConfirmBooking}
+          onProceedToBookingPage={handleOpenVehicleBooking}
+          defaultPickupCity={searchResults?.pickupCity || 'Jeddah'}
+          defaultDropoffCity={searchResults?.dropoffCity || 'Makkah'}
+          defaultDate={searchResults?.travelDate}
+          defaultTime={searchResults?.pickupTime}
+        />
+      )}
+
+      {/* Agency Details Modal (used when inspecting agency from search or category) */}
+      {selectedAgency && activeView !== 'agencies' && (
+        <AgencyDetailsModal
+          agency={selectedAgency}
+          agencyVehicles={vehicles.filter(v => v.companyId === selectedAgency.id)}
+          onClose={() => setSelectedAgency(null)}
+          onSelectVehicle={handleOpenVehicleDetails}
+          onAddReview={handleAddReview}
+        />
+      )}
+
+      {/* All Agencies Directory Modal */}
+      {showAllAgenciesModal && (
+        <AllAgenciesModal
+          agencies={agencies}
+          onClose={() => setShowAllAgenciesModal(false)}
+          onSelectAgency={(agency) => {
+            setShowAllAgenciesModal(false);
+            handleSelectAgency(agency);
+          }}
+        />
+      )}
+
+      {/* All Vehicles Catalog Modal */}
+      {showAllVehiclesModal && (
+        <AllVehiclesModal
+          vehicles={vehicles}
+          initialCategory={initialCategoryFilter}
+          onClose={() => setShowAllVehiclesModal(false)}
+          onSelectVehicle={(veh) => {
+            setShowAllVehiclesModal(false);
+            handleOpenVehicleDetails(veh);
+          }}
+          onBookVehicle={(veh) => {
+            setShowAllVehiclesModal(false);
+            handleOpenVehicleBooking(veh);
+          }}
+        />
+      )}
+
+      {/* List Your Company Registration Modal */}
+      {showCompanyRegModal && (
+        <CompanyRegistrationModal
+          onClose={() => setShowCompanyRegModal(false)}
+          onCompanyRegistered={handleCompanyRegistered}
+        />
+      )}
+
+      {/* Routes Modal */}
+      {showRoutesModal && (
+        <RoutesModal
+          onClose={() => setShowRoutesModal(false)}
+          onSelectRoute={handleSelectRoute}
+        />
+      )}
+
+      {/* Ziyarat Destination Modal */}
+      {selectedZiyarat && (
+        <ZiyaratModal
+          destination={selectedZiyarat}
+          onClose={() => setSelectedZiyarat(null)}
+          onBookZiyarat={handleBookZiyarat}
+        />
+      )}
+
+      {/* Blog Article Reader Modal */}
+      {selectedBlogPost && (
+        <BlogReaderModal
+          post={selectedBlogPost}
+          onClose={() => setSelectedBlogPost(null)}
+        />
+      )}
+
+      {/* Login & Signup Modal */}
+      {showAuthModal && (
+        <AuthModal
+          initialMode={showAuthModal}
+          onClose={() => setShowAuthModal(null)}
+          onLoginSuccess={(user) => setCurrentUser(user)}
+        />
+      )}
+
+      {/* User Bookings Modal */}
+      {showMyBookingsModal && (
+        <MyBookingsModal
+          bookings={bookings}
+          onClose={() => setShowMyBookingsModal(false)}
+          onCancelBooking={handleCancelBooking}
+        />
+      )}
+
+      {/* How It Works & Transparency Modal */}
+      {showHowItWorksModal && (
+        <HowItWorksModal
+          initialTopic={showHowItWorksModal}
+          onClose={() => setShowHowItWorksModal(null)}
+        />
+      )}
+
+    </div>
+  );
+}
