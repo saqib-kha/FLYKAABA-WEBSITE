@@ -34,6 +34,13 @@ import { CompanyProfilePageView } from './components/CompanyProfilePageView';
 import { SearchVehiclesPageView } from './components/SearchVehiclesPageView';
 import { HowItWorksPageView } from './components/HowItWorksPageView';
 import { RoutesPageView } from './components/RoutesPageView';
+import { MakkahZiyaratPageView } from './components/MakkahZiyaratPageView';
+import { MadinaZiyaratPageView } from './components/MadinaZiyaratPageView';
+import { ListCompanyPageView } from './components/ListCompanyPageView';
+import { AgencyDashboardView } from './components/AgencyDashboardView';
+import { AdminDashboardView } from './components/AdminDashboardView';
+import { CustomerDashboardView } from './components/CustomerDashboardView';
+import { InsForgeConnectionModal } from './components/InsForgeConnectionModal';
 
 // Mock Data
 import {
@@ -93,7 +100,8 @@ export default function App() {
   });
 
   // Modal / View Controls
-  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'vehicles' | 'how-it-works'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'vehicles' | 'how-it-works' | 'ziyarat-makkah' | 'ziyarat-madina' | 'list-company' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard'>('home');
+  const [showInsForgeModal, setShowInsForgeModal] = useState(false);
   const [selectedCategoryPage, setSelectedCategoryPage] = useState<string | null>(null);
   const [bookingVehicle, setBookingVehicle] = useState<Vehicle | null>(null);
   const [searchResults, setSearchResults] = useState<SearchParams | null>(null);
@@ -185,6 +193,54 @@ export default function App() {
 
   const handleOpenRoutes = () => {
     setActiveView('routes');
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenMakkahZiyarat = () => {
+    setActiveView('ziyarat-makkah');
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenMadinaZiyarat = () => {
+    setActiveView('ziyarat-madina');
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenListCompany = () => {
+    setActiveView('list-company');
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenAgencyDashboard = () => {
+    setActiveView('agency-dashboard');
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenAdminDashboard = () => {
+    setActiveView('admin-dashboard');
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenCustomerDashboard = () => {
+    setActiveView('customer-dashboard');
     setSelectedCategoryPage(null);
     setSelectedAgency(null);
     setBookingVehicle(null);
@@ -295,7 +351,13 @@ export default function App() {
         onOpenAgencies={handleOpenAllCompanies}
         onOpenRoutes={handleOpenRoutes}
         onSelectZiyarat={(z) => setSelectedZiyarat(z)}
-        onOpenListCompany={() => setShowCompanyRegModal(true)}
+        onOpenMakkahZiyarat={handleOpenMakkahZiyarat}
+        onOpenMadinaZiyarat={handleOpenMadinaZiyarat}
+        onOpenListCompany={handleOpenListCompany}
+        onOpenAgencyDashboard={handleOpenAgencyDashboard}
+        onOpenAdminDashboard={handleOpenAdminDashboard}
+        onOpenCustomerDashboard={handleOpenCustomerDashboard}
+        onOpenInsForgeModal={() => setShowInsForgeModal(true)}
         onOpenLogin={() => setShowAuthModal('login')}
         onOpenSignup={() => setShowAuthModal('signup')}
         currentUser={currentUser}
@@ -391,6 +453,75 @@ export default function App() {
             onSelectRoute={(fromCity, toCity) => {
               handleSelectRoute(fromCity, toCity);
             }}
+          />
+        ) : activeView === 'ziyarat-makkah' ? (
+          <MakkahZiyaratPageView
+            onGoHome={handleGoHome}
+            onBookVehicle={handleOpenVehicleBooking}
+            onSelectVehicle={handleOpenVehicleDetails}
+            onSelectAgency={handleSelectAgency}
+            allAgencies={agencies}
+            allVehicles={vehicles}
+          />
+        ) : activeView === 'ziyarat-madina' ? (
+          <MadinaZiyaratPageView
+            onGoHome={handleGoHome}
+            onBookVehicle={handleOpenVehicleBooking}
+            onSelectVehicle={handleOpenVehicleDetails}
+            onSelectAgency={handleSelectAgency}
+            allAgencies={agencies}
+            allVehicles={vehicles}
+          />
+        ) : activeView === 'list-company' ? (
+          <ListCompanyPageView
+            onGoHome={handleGoHome}
+            onCompanyRegistered={(companyName) => {
+              handleCompanyRegistered(companyName);
+            }}
+            onSeeHowItWorks={handleOpenHowItWorks}
+            onOpenLogin={() => setShowAuthModal('login')}
+          />
+        ) : activeView === 'agency-dashboard' ? (
+          <AgencyDashboardView
+            agency={agencies[0] || { id: 'agency-1', name: 'Al Faisal Transport Co', slug: 'al-faisal', city: 'Madinah', isVerified: true, coverImage: '', avatarImage: '', rating: 5, reviewCount: 12, phone: '+966 50 123 4567', whatsapp: '+966501234567', email: 'info@alfaisal.sa', description: '', licenseNumber: 'KSA-MOT-44289', foundedYear: 2014, vehicleCount: 15, featuredVehicles: [] }}
+            vehicles={vehicles}
+            bookings={bookings}
+            onGoHome={handleGoHome}
+            onOpenInsForgeModal={() => setShowInsForgeModal(true)}
+            onUpdateBookingStatus={(id, status) => {
+              setBookings(prev => prev.map(b => b.id === id ? { ...b, status: status as 'Completed' | 'Confirmed' | 'Pending Confirmation' } : b));
+            }}
+            onToggleVehicleAvailability={(id) => {
+              setVehicles(prev => prev.map(v => v.id === id ? { ...v, isAvailable: v.isAvailable === false ? true : false } : v));
+            }}
+            onAddNewVehicle={(newVeh) => {
+              setVehicles(prev => [newVeh as Vehicle, ...prev]);
+            }}
+          />
+        ) : activeView === 'admin-dashboard' ? (
+          <AdminDashboardView
+            agencies={agencies}
+            vehicles={vehicles}
+            bookings={bookings}
+            onGoHome={handleGoHome}
+            onOpenInsForgeModal={() => setShowInsForgeModal(true)}
+            onApproveAgency={(agencyId) => {
+              setAgencies(prev => prev.map(a => a.id === agencyId ? { ...a, isVerified: true } : a));
+            }}
+            onRejectAgency={(agencyId) => {
+              setAgencies(prev => prev.filter(a => a.id !== agencyId));
+            }}
+          />
+        ) : activeView === 'customer-dashboard' ? (
+          <CustomerDashboardView
+            currentUser={currentUser}
+            bookings={bookings}
+            onGoHome={handleGoHome}
+            onOpenMakkahZiyarat={handleOpenMakkahZiyarat}
+            onOpenMadinaZiyarat={handleOpenMadinaZiyarat}
+            onOpenRoutes={handleOpenRoutes}
+            onCancelBooking={handleCancelBooking}
+            onOpenInsForgeModal={() => setShowInsForgeModal(true)}
           />
         ) : (
           <>
@@ -578,6 +709,13 @@ export default function App() {
         <HowItWorksModal
           initialTopic={showHowItWorksModal}
           onClose={() => setShowHowItWorksModal(null)}
+        />
+      )}
+
+      {/* InsForge Backend & Infrastructure Modal */}
+      {showInsForgeModal && (
+        <InsForgeConnectionModal
+          onClose={() => setShowInsForgeModal(false)}
         />
       )}
 

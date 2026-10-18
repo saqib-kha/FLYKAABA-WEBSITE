@@ -339,6 +339,25 @@ export const TRAVEL_AGENCIES: TravelAgency[] = [
     vehicleCount: 44,
     featuredVehicles: ['veh-bmw-1', 'veh-camry-2024'],
   },
+  {
+    id: 'agency-9',
+    name: 'Madinah Pilgrim Fleet',
+    slug: 'madinah-pilgrim-fleet',
+    city: 'Madinah',
+    isVerified: true,
+    coverImage: agencyTaifCover,
+    avatarImage: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=150&auto=format&fit=crop&q=80',
+    rating: 4.9,
+    reviewCount: 22,
+    phone: '+966 54 888 4433',
+    whatsapp: '+966548884433',
+    email: 'info@madinahpilgrimfleet.sa',
+    description: 'Premier Madinah pilgrimage transport specialist offering modern air-conditioned vans, minibuses, and sedans for historic Ziyarat and airport transfers.',
+    licenseNumber: 'KSA-MOT-52890',
+    foundedYear: 2018,
+    vehicleCount: 45,
+    featuredVehicles: ['madina-hiace-2023'],
+  },
 ];
 
 
