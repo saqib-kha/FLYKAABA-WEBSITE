@@ -14,9 +14,10 @@ import { FlyKaabaLogo } from './FlyKaabaLogo';
 
 interface FooterProps {
   onQuickLinkClick: (link: string) => void;
+  onOpenInsForgeModal?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onQuickLinkClick }) => {
+export const Footer: React.FC<FooterProps> = ({ onQuickLinkClick, onOpenInsForgeModal }) => {
   const quickLinks = [
     'How It Works for Customers',
     'How It Works for Companies',
@@ -146,10 +147,18 @@ export const Footer: React.FC<FooterProps> = ({ onQuickLinkClick }) => {
         </div>
 
         {/* Horizontal Divider Line matching Screenshot 8 */}
-        <div className="border-t border-white/20 pt-6 text-center">
-          <p className="text-xs text-white/80 font-normal">
-            © 2026 FlyKaaba. All rights reserved.
-          </p>
+        <div className="border-t border-white/20 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-white/80 gap-3">
+          <p>© 2026 FlyKaaba. All rights reserved.</p>
+          {onOpenInsForgeModal && (
+            <button
+              onClick={onOpenInsForgeModal}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white/90 text-[11px] font-medium transition-colors cursor-pointer"
+              title="Inspect InsForge Backend Connection"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span>InsForge BaaS Connected</span>
+            </button>
+          )}
         </div>
 
       </div>

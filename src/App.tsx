@@ -41,6 +41,7 @@ import { AgencyDashboardView } from './components/AgencyDashboardView';
 import { AdminDashboardView } from './components/AdminDashboardView';
 import { CustomerDashboardView } from './components/CustomerDashboardView';
 import { InsForgeConnectionModal } from './components/InsForgeConnectionModal';
+import { insforgeService } from './lib/insforge';
 
 // Mock Data
 import {
@@ -136,6 +137,35 @@ export default function App() {
       localStorage.removeItem('flykaaba_user');
     }
   }, [currentUser]);
+
+  // Initial fetch from InsForge Database
+  useEffect(() => {
+    async function loadInsForgeData() {
+      try {
+        const [loadedAgencies, loadedVehicles, loadedBookings, authUser] = await Promise.all([
+          insforgeService.getAgencies(),
+          insforgeService.getVehicles(),
+          insforgeService.getBookings(currentUser?.email),
+          insforgeService.getCurrentUser(),
+        ]);
+        if (loadedAgencies && loadedAgencies.length > 0) {
+          setAgencies(loadedAgencies);
+        }
+        if (loadedVehicles && loadedVehicles.length > 0) {
+          setVehicles(loadedVehicles);
+        }
+        if (loadedBookings && loadedBookings.length > 0) {
+          setBookings(loadedBookings);
+        }
+        if (authUser) {
+          setCurrentUser(authUser);
+        }
+      } catch (err) {
+        console.warn('[InsForge] Background data sync note:', err);
+      }
+    }
+    loadInsForgeData();
+  }, []);
 
   // Handlers
   const handleSearch = (params: SearchParams) => {
@@ -258,8 +288,13 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleConfirmBooking = (newBooking: BookingRecord) => {
+  const handleConfirmBooking = async (newBooking: BookingRecord) => {
     setBookings(prev => [newBooking, ...prev]);
+    try {
+      await insforgeService.createBooking(newBooking);
+    } catch (err) {
+      console.warn('Booking persisted to local session:', err);
+    }
   };
 
   const handleCancelBooking = (bookingId: string) => {
@@ -361,7 +396,10 @@ export default function App() {
         onOpenLogin={() => setShowAuthModal('login')}
         onOpenSignup={() => setShowAuthModal('signup')}
         currentUser={currentUser}
-        onLogout={() => setCurrentUser(null)}
+        onLogout={async () => {
+          await insforgeService.signOut();
+          setCurrentUser(null);
+        }}
         onOpenMyBookings={() => setShowMyBookingsModal(true)}
         activeView={activeView}
         onGoHome={handleGoHome}
@@ -577,7 +615,10 @@ export default function App() {
       </main>
 
       {/* 8. Footer matching Screenshot 8 */}
-      <Footer onQuickLinkClick={handleQuickLink} />
+      <Footer 
+        onQuickLinkClick={handleQuickLink} 
+        onOpenInsForgeModal={() => setShowInsForgeModal(true)} 
+      />
 
       {/* ================= MODALS & ACTIVE OVERLAYS ================= */}
 

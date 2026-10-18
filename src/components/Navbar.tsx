@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { LogIn, UserPlus, ChevronDown, Menu, X, Building2, MapPin, Compass, User, LogOut, CheckCircle2, ShieldCheck, Zap, LayoutDashboard } from 'lucide-react';
+import { LogIn, UserPlus, ChevronDown, Menu, X, Building2, MapPin, Compass, User, LogOut, CheckCircle2 } from 'lucide-react';
 import { ZIYARAT_DESTINATIONS, ZiyaratDestination } from '../data/mockData';
 import { FlyKaabaLogo } from './FlyKaabaLogo';
 
@@ -43,11 +43,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenInsForgeModal,
 }) => {
   const [ziyaratOpen, setZiyaratOpen] = useState(false);
-  const [dashboardOpen, setDashboardOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const dashboardRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -55,9 +53,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setZiyaratOpen(false);
-      }
-      if (dashboardRef.current && !dashboardRef.current.contains(event.target as Node)) {
-        setDashboardOpen(false);
       }
       if (userDropdownRef.current && !userDropdownRef.current.contains(event.target as Node)) {
         setUserMenuOpen(false);
@@ -158,86 +153,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Side: CTAs & Auth */}
         <div className="hidden md:flex items-center gap-3.5">
-          {/* Dashboards Switcher */}
-          <div className="relative" ref={dashboardRef}>
-            <button
-              onClick={() => setDashboardOpen(!dashboardOpen)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-semibold transition-all cursor-pointer ${
-                activeView.includes('dashboard')
-                  ? 'bg-[#FBF7EE] text-[#C9A01B] border border-[#C9A01B]/40'
-                  : 'text-[#2D3139] hover:text-[#C9A01B] hover:bg-gray-50 border border-gray-200'
-              }`}
-            >
-              <LayoutDashboard className="w-3.5 h-3.5 text-[#C9A01B]" />
-              <span>Dashboards</span>
-              <ChevronDown className={`w-3 h-3 transition-transform ${dashboardOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {dashboardOpen && (
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-[#E5E1D8] py-2 px-1.5 z-50 animate-in fade-in-50 zoom-in-95 duration-150">
-                <div className="px-3 py-1 border-b border-gray-100 text-[10px] font-bold uppercase tracking-wider text-[#6B7280]">
-                  Connected Portals
-                </div>
-                <button
-                  onClick={() => {
-                    if (onOpenAgencyDashboard) onOpenAgencyDashboard();
-                    setDashboardOpen(false);
-                  }}
-                  className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors flex items-center gap-2.5 cursor-pointer ${
-                    activeView === 'agency-dashboard' ? 'bg-[#FBF7EE] text-[#C9A01B] font-semibold' : 'text-[#2D3139] hover:bg-gray-50'
-                  }`}
-                >
-                  <Building2 className="w-4 h-4 text-[#C9A01B]" />
-                  <div>
-                    <div className="font-semibold">Agency Partner</div>
-                    <div className="text-[10px] text-[#6B7280]">Fleet & bookings dispatch</div>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (onOpenAdminDashboard) onOpenAdminDashboard();
-                    setDashboardOpen(false);
-                  }}
-                  className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors flex items-center gap-2.5 cursor-pointer ${
-                    activeView === 'admin-dashboard' ? 'bg-[#FBF7EE] text-[#C9A01B] font-semibold' : 'text-[#2D3139] hover:bg-gray-50'
-                  }`}
-                >
-                  <ShieldCheck className="w-4 h-4 text-[#C9A01B]" />
-                  <div>
-                    <div className="font-semibold">Operations Admin</div>
-                    <div className="text-[10px] text-[#6B7280]">Marketplace & verifications</div>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => {
-                    if (onOpenCustomerDashboard) onOpenCustomerDashboard();
-                    setDashboardOpen(false);
-                  }}
-                  className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors flex items-center gap-2.5 cursor-pointer ${
-                    activeView === 'customer-dashboard' ? 'bg-[#FBF7EE] text-[#C9A01B] font-semibold' : 'text-[#2D3139] hover:bg-gray-50'
-                  }`}
-                >
-                  <User className="w-4 h-4 text-[#C9A01B]" />
-                  <div>
-                    <div className="font-semibold">Pilgrim Traveler</div>
-                    <div className="text-[10px] text-[#6B7280]">Active vouchers & tracking</div>
-                  </div>
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* InsForge Status Trigger */}
           <button
-            onClick={onOpenInsForgeModal}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#18181B] hover:bg-[#27272A] text-white text-[12px] font-semibold transition-all cursor-pointer shadow-xs"
-            title="Inspect InsForge Cloud Status"
+            onClick={onOpenListCompany}
+            className={`text-[14px] font-medium transition-colors cursor-pointer ${
+              activeView === 'list-company' ? 'text-[#C9A01B] font-semibold' : 'text-[#2D3139] hover:text-[#C9A01B]'
+            }`}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <Zap className="w-3.5 h-3.5 text-[#C9A01B] fill-[#C9A01B]" />
-            <span>InsForge</span>
+            List your company
           </button>
 
           <button
@@ -366,53 +288,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             </div>
 
-            <div className="py-2 border-b border-gray-100">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2 text-sm font-semibold text-[#111111]">
-                  <LayoutDashboard className="w-4 h-4 text-[#C9A01B]" />
-                  Connected Dashboards
-                </div>
-                <button
-                  onClick={() => {
-                    if (onOpenInsForgeModal) onOpenInsForgeModal();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="px-2 py-0.5 rounded-full bg-[#18181B] text-[10px] font-bold text-white flex items-center gap-1"
-                >
-                  <Zap className="w-2.5 h-2.5 text-[#C9A01B] fill-current" />
-                  InsForge
-                </button>
-              </div>
-              <div className="pl-6 space-y-1">
-                <button
-                  onClick={() => {
-                    if (onOpenAgencyDashboard) onOpenAgencyDashboard();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="block w-full text-left text-xs font-medium text-[#4B5563] hover:text-[#C9A01B] py-1"
-                >
-                  • Agency Partner Dashboard
-                </button>
-                <button
-                  onClick={() => {
-                    if (onOpenAdminDashboard) onOpenAdminDashboard();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="block w-full text-left text-xs font-medium text-[#4B5563] hover:text-[#C9A01B] py-1"
-                >
-                  • Operations Admin Dashboard
-                </button>
-                <button
-                  onClick={() => {
-                    if (onOpenCustomerDashboard) onOpenCustomerDashboard();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="block w-full text-left text-xs font-medium text-[#4B5563] hover:text-[#C9A01B] py-1"
-                >
-                  • Pilgrim Booking Portal
-                </button>
-              </div>
-            </div>
 
             <button
               onClick={() => {

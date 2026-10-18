@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, LogIn, UserPlus, Lock, Mail, User, Shield } from 'lucide-react';
+import { X, LogIn, UserPlus, Lock, Mail, User, Shield, AlertCircle, Loader2 } from 'lucide-react';
+import { insforgeService } from '../lib/insforge';
 
 interface AuthModalProps {
   initialMode: 'login' | 'signup';
@@ -16,33 +17,92 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password.trim()) return;
+    setErrorMessage(null);
 
-    const userName = mode === 'signup' && name.trim() ? name : email.split('@')[0];
-    onLoginSuccess({
-      name: userName.charAt(0).toUpperCase() + userName.slice(1),
-      email: email.trim(),
-      role: 'Pilgrim / Customer',
-    });
-    onClose();
+    if (!email.trim() || !password.trim()) {
+      setErrorMessage('Please fill in both email and password.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setErrorMessage('Password must be at least 6 characters long.');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      if (mode === 'signup') {
+        const { user, error } = await insforgeService.signUp({
+          email: email.trim(),
+          password,
+          name: name.trim() || email.split('@')[0],
+        });
+
+        if (error) {
+          setErrorMessage(error);
+          setIsLoading(false);
+          return;
+        }
+
+        if (user) {
+          onLoginSuccess({
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          });
+          onClose();
+        }
+      } else {
+        const { user, error } = await insforgeService.signIn({
+          email: email.trim(),
+          password,
+        });
+
+        if (error) {
+          setErrorMessage(error);
+          setIsLoading(false);
+          return;
+        }
+
+        if (user) {
+          onLoginSuccess({
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          });
+          onClose();
+        }
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDemoLogin = (role: 'pilgrim' | 'agency') => {
     if (role === 'pilgrim') {
-      onLoginSuccess({
+      const demoUser = {
         name: 'Zayd Al-Ansari',
         email: 'zayd.pilgrim@example.com',
         role: 'Verified Traveler',
-      });
+      };
+      localStorage.setItem('flykaaba_user', JSON.stringify(demoUser));
+      onLoginSuccess(demoUser);
     } else {
-      onLoginSuccess({
+      const demoUser = {
         name: 'Faisal Transport Admin',
         email: 'fleet@alfaisaltransport.sa',
         role: 'Transport Agency Operator',
-      });
+      };
+      localStorage.setItem('flykaaba_user', JSON.stringify(demoUser));
+      onLoginSuccess(demoUser);
     }
     onClose();
   };
@@ -56,27 +116,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-1.5 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100"
+            aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <span className="font-playfair text-xl font-black text-[#111111]">FlyKaaba</span>
-            <span className="text-xs text-[#6B7280]">Account</span>
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#C9A01B]/15 text-[#8C6314]">
+              InsForge Auth
+            </span>
           </div>
 
           <div className="flex items-center gap-4 mt-3 text-xs font-semibold">
             <button
-              onClick={() => setMode('login')}
-              className={`pb-2 border-b-2 transition-colors ${
+              onClick={() => { setMode('login'); setErrorMessage(null); }}
+              className={`pb-2 border-b-2 transition-colors cursor-pointer ${
                 mode === 'login' ? 'border-[#C9A01B] text-[#C9A01B]' : 'border-transparent text-gray-500'
               }`}
             >
               Sign In
             </button>
             <button
-              onClick={() => setMode('signup')}
-              className={`pb-2 border-b-2 transition-colors ${
+              onClick={() => { setMode('signup'); setErrorMessage(null); }}
+              className={`pb-2 border-b-2 transition-colors cursor-pointer ${
                 mode === 'signup' ? 'border-[#C9A01B] text-[#C9A01B]' : 'border-transparent text-gray-500'
               }`}
             >
@@ -87,6 +150,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Form Body */}
         <div className="p-6">
+          {errorMessage && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-start gap-2 animate-in fade-in-50">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-500" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'signup' && (
               <div>
@@ -135,7 +205,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="••••••••"
+                  placeholder="At least 6 characters"
                   className="w-full h-10 pl-9 pr-3 border border-[#E5E1D8] rounded-lg text-xs sm:text-sm focus:border-[#C9A01B] focus:outline-none"
                 />
               </div>
@@ -143,9 +213,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
             <button
               type="submit"
-              className="w-full py-2.5 rounded-full bg-[#C9A01B] hover:bg-[#b89115] text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer mt-2"
+              disabled={isLoading}
+              className="w-full py-2.5 rounded-full bg-[#C9A01B] hover:bg-[#b89115] disabled:opacity-70 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer mt-2 flex items-center justify-center gap-2"
             >
-              {mode === 'login' ? 'Login to FlyKaaba' : 'Register Account'}
+              {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+              <span>{mode === 'login' ? 'Login with InsForge' : 'Register with InsForge'}</span>
             </button>
           </form>
 
@@ -158,14 +230,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <button
                 type="button"
                 onClick={() => handleDemoLogin('pilgrim')}
-                className="flex-1 py-1.5 px-2 bg-[#F7F6F2] hover:bg-[#E5E1D8] rounded-lg text-[11px] font-medium text-gray-700 transition-colors"
+                className="flex-1 py-1.5 px-2 bg-[#F7F6F2] hover:bg-[#E5E1D8] rounded-lg text-[11px] font-medium text-gray-700 transition-colors cursor-pointer"
               >
                 👤 Pilgrim Demo
               </button>
               <button
                 type="button"
                 onClick={() => handleDemoLogin('agency')}
-                className="flex-1 py-1.5 px-2 bg-[#F7F6F2] hover:bg-[#E5E1D8] rounded-lg text-[11px] font-medium text-gray-700 transition-colors"
+                className="flex-1 py-1.5 px-2 bg-[#F7F6F2] hover:bg-[#E5E1D8] rounded-lg text-[11px] font-medium text-gray-700 transition-colors cursor-pointer"
               >
                 🏢 Transport Co Demo
               </button>

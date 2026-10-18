@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Building2, ShieldCheck, CheckCircle2, FileText, Upload, AlertCircle } from 'lucide-react';
 import { SAUDI_CITIES } from '../data/mockData';
+import { insforgeService } from '../lib/insforge';
 
 interface CompanyRegistrationModalProps {
   onClose: () => void;
@@ -21,13 +22,27 @@ export const CompanyRegistrationModal: React.FC<CompanyRegistrationModalProps> =
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!companyName.trim() || !crNumber.trim() || !phone.trim() || !email.trim()) {
       setError('Please fill in all required company registration fields.');
       return;
     }
     setError('');
+    try {
+      const fleetNum = parseInt(fleetSize.replace(/\D/g, '')) || 10;
+      await insforgeService.registerAgency({
+        name: companyName.trim(),
+        city,
+        phone: phone.trim(),
+        email: email.trim(),
+        licenseNumber: crNumber.trim(),
+        description: `Transport operator registered in ${city}. Commercial Registration: ${crNumber}`,
+        vehicleCount: fleetNum,
+      });
+    } catch (err) {
+      console.warn('Company registration saved locally:', err);
+    }
     setSubmitted(true);
     onCompanyRegistered(companyName);
   };

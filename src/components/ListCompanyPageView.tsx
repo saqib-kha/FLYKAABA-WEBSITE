@@ -13,6 +13,7 @@ import {
   ClipboardCheck,
   Check
 } from 'lucide-react';
+import { insforgeService } from '../lib/insforge';
 
 interface ListCompanyPageViewProps {
   onGoHome: () => void;
@@ -37,7 +38,7 @@ export const ListCompanyPageView: React.FC<ListCompanyPageViewProps> = ({
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -59,6 +60,22 @@ export const ListCompanyPageView: React.FC<ListCompanyPageViewProps> = ({
     }
 
     const regName = companyName.trim() || `${firstName} ${lastName} Transport`.trim();
+    try {
+      await insforgeService.registerAgency({
+        name: regName,
+        email: email.trim(),
+        description: `Registered partner agency by ${firstName} ${lastName}`,
+        city: 'Makkah',
+      });
+      await insforgeService.signUp({
+        email: email.trim(),
+        password,
+        name: `${firstName} ${lastName}`.trim(),
+      });
+    } catch (err) {
+      console.warn('Agency account registration note:', err);
+    }
+
     if (onCompanyRegistered) {
       onCompanyRegistered(regName);
     }
