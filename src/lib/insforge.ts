@@ -6,10 +6,10 @@
 import { createClient, InsForgeClient } from '@insforge/sdk';
 import { TravelAgency, Vehicle, BookingRecord } from '../data/mockData';
 
-// Default / fallback configurations
-const DEFAULT_PROJECT_ID = 'effc0002-d404-4d50-b5d5-01d8250f6fca';
-const DEFAULT_URL = import.meta.env.VITE_INSFORGE_URL || 'https://effc0002-d404-4d50-b5d5-01d8250f6fca.insforge.app';
-const DEFAULT_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || 'ik_live_effc0002_flykaaba';
+// Default InsForge configurations
+const DEFAULT_PROJECT_ID = 'hi4ydxt3';
+const DEFAULT_URL = import.meta.env.VITE_INSFORGE_URL || 'https://hi4ydxt3.us-east.insforge.app';
+const DEFAULT_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || 'ik_c93abb31879721dddfab27ce147d3776';
 
 export interface InsForgeConfigState {
   projectId: string;
@@ -25,9 +25,23 @@ class InsForgeService {
   private config: InsForgeConfigState;
 
   constructor() {
-    const savedProjectId = localStorage.getItem('insforge_project_id') || DEFAULT_PROJECT_ID;
-    const savedUrl = localStorage.getItem('insforge_url') || DEFAULT_URL;
-    const savedKey = localStorage.getItem('insforge_key') || DEFAULT_ANON_KEY;
+    let savedProjectId: string = localStorage.getItem('insforge_project_id') || DEFAULT_PROJECT_ID;
+    let savedUrl: string = localStorage.getItem('insforge_url') || DEFAULT_URL;
+    let savedKey: string = localStorage.getItem('insforge_key') || DEFAULT_ANON_KEY;
+
+    // Auto-migrate from older mock / initial placeholders to active InsForge instance
+    if (!savedUrl || savedUrl.includes('effc0002-d404')) {
+      savedUrl = DEFAULT_URL;
+      localStorage.setItem('insforge_url', DEFAULT_URL);
+    }
+    if (!savedKey || savedKey.includes('ik_live_effc0002')) {
+      savedKey = DEFAULT_ANON_KEY;
+      localStorage.setItem('insforge_key', DEFAULT_ANON_KEY);
+    }
+    if (!savedProjectId || savedProjectId.includes('effc0002-d404')) {
+      savedProjectId = DEFAULT_PROJECT_ID;
+      localStorage.setItem('insforge_project_id', DEFAULT_PROJECT_ID);
+    }
 
     this.config = {
       projectId: savedProjectId,
@@ -71,7 +85,7 @@ class InsForgeService {
       localStorage.setItem('insforge_key', this.config.anonKey);
 
       this.initClient();
-      return { success: true, message: 'InsForge project effc0002-d404-4d50-b5d5-01d8250f6fca credentials saved successfully.' };
+      return { success: true, message: `InsForge project ${this.config.projectId} (${this.config.baseUrl}) credentials saved successfully.` };
     } catch (err: any) {
       return { success: false, message: err.message || 'Failed to update InsForge config' };
     }

@@ -161,7 +161,7 @@ export const InsForgeConnectionModal: React.FC<InsForgeConnectionModalProps> = (
                   required
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="https://effc0002-d404-4d50-b5d5-01d8250f6fca.insforge.app"
+                  placeholder="https://hi4ydxt3.us-east.insforge.app"
                   className="w-full px-4 py-2.5 pl-10 rounded-xl border border-gray-200 text-xs font-mono text-[#111111] focus:outline-none focus:border-[#C9A01B]"
                 />
                 <Server className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -178,7 +178,7 @@ export const InsForgeConnectionModal: React.FC<InsForgeConnectionModalProps> = (
                   required
                   value={key}
                   onChange={(e) => setKey(e.target.value)}
-                  placeholder="ik_live_..."
+                  placeholder="ik_c93abb318797..."
                   className="w-full px-4 py-2.5 pl-10 rounded-xl border border-gray-200 text-xs font-mono text-[#111111] focus:outline-none focus:border-[#C9A01B]"
                 />
                 <Key className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
