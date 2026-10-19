@@ -1,0 +1,288 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" width="1000" height="750">
+  <defs>
+    <!-- Background foliage and sky gradients -->
+    <linearGradient id="bgSky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4a5d4e" />
+      <stop offset="40%" stop-color="#344337" />
+      <stop offset="100%" stop-color="#1b241c" />
+    </linearGradient>
+    <linearGradient id="roadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3a3d3c" />
+      <stop offset="50%" stop-color="#2a2c2b" />
+      <stop offset="100%" stop-color="#1a1c1b" />
+    </linearGradient>
+
+    <!-- Palm trunk textures -->
+    <linearGradient id="palmTrunk1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1c1815" />
+      <stop offset="50%" stop-color="#3d342c" />
+      <stop offset="100%" stop-color="#181512" />
+    </linearGradient>
+
+    <!-- Car Paint Gradients (Clean Pearl White) -->
+    <linearGradient id="carHood" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="50%" stop-color="#f0f3f6" />
+      <stop offset="85%" stop-color="#dce1e7" />
+      <stop offset="100%" stop-color="#cbd2db" />
+    </linearGradient>
+
+    <linearGradient id="carBumper" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#f4f6f9" />
+      <stop offset="80%" stop-color="#d6dde6" />
+      <stop offset="100%" stop-color="#b8c1cd" />
+    </linearGradient>
+
+    <linearGradient id="carSide" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e2e7ec" />
+      <stop offset="40%" stop-color="#f5f7fa" />
+      <stop offset="80%" stop-color="#e4e9ef" />
+      <stop offset="100%" stop-color="#c8cfd8" />
+    </linearGradient>
+
+    <!-- Grille Gradient -->
+    <linearGradient id="grilleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a1c1e" />
+      <stop offset="100%" stop-color="#090a0b" />
+    </linearGradient>
+
+    <!-- Chrome Bar -->
+    <linearGradient id="chromeBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#88929b" />
+      <stop offset="35%" stop-color="#ffffff" />
+      <stop offset="45%" stop-color="#6b9eff" />
+      <stop offset="50%" stop-color="#ffffff" />
+      <stop offset="65%" stop-color="#e8f0fe" />
+      <stop offset="100%" stop-color="#88929b" />
+    </linearGradient>
+
+    <!-- Lens Flare Glow -->
+    <radialGradient id="blueGlint" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="25%" stop-color="#a8d0ff" stop-opacity="0.9" />
+      <stop offset="55%" stop-color="#3d82ff" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#0055ff" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Headlight Glow -->
+    <radialGradient id="headlightGlow" cx="45%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fffbe8" stop-opacity="1" />
+      <stop offset="40%" stop-color="#ffdf79" stop-opacity="0.8" />
+      <stop offset="75%" stop-color="#f5a623" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#d97706" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="fogGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="45%" stop-color="#ffe89e" stop-opacity="0.9" />
+      <stop offset="70%" stop-color="#f59e0b" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#b45309" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Windshield Reflection -->
+    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141c22" />
+      <stop offset="30%" stop-color="#1f2c34" />
+      <stop offset="70%" stop-color="#2a3942" />
+      <stop offset="100%" stop-color="#10171c" />
+    </linearGradient>
+
+    <!-- Shadow under car -->
+    <radialGradient id="carShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#050607" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#050607" stop-opacity="0.6" />
+      <stop offset="85%" stop-color="#050607" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#050607" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Filter for soft blur on background elements -->
+    <filter id="softBlur" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="6" />
+    </filter>
+  </defs>
+
+  <!-- 1. Background Landscape -->
+  <rect width="1000" height="750" fill="url(#bgSky)" />
+
+  <!-- Tropical Leaning Palm Tree Trunks (Matching uploaded photo) -->
+  <g id="palms" opacity="0.85">
+    <!-- Left far palm -->
+    <path d="M-40,0 Q20,350 -10,750 L60,750 Q80,350 40,0 Z" fill="url(#palmTrunk1)" />
+    <!-- Main leaning palm left -->
+    <path d="M120,-50 Q70,300 10,750 L90,750 Q160,320 200,-50 Z" fill="url(#palmTrunk1)" />
+    <!-- Secondary leaning palm -->
+    <path d="M220,-20 Q280,260 210,750 L280,750 Q360,280 300,-20 Z" fill="url(#palmTrunk1)" />
+    <!-- Center background palm -->
+    <path d="M540,-50 Q560,200 520,550 L580,550 Q630,220 610,-50 Z" fill="url(#palmTrunk1)" opacity="0.6" />
+    <!-- Right leaning palm -->
+    <path d="M680,-40 Q750,220 670,550 L740,550 Q820,240 770,-40 Z" fill="url(#palmTrunk1)" />
+    <!-- Distant foliage shapes -->
+    <circle cx="850" cy="220" r="140" fill="#2d3d2a" opacity="0.5" filter="url(#softBlur)" />
+    <circle cx="920" cy="340" r="180" fill="#223020" opacity="0.6" filter="url(#softBlur)" />
+    <circle cx="80" cy="180" r="130" fill="#2a3828" opacity="0.6" filter="url(#softBlur)" />
+  </g>
+
+  <!-- Road surface and roadside grass -->
+  <path d="M0,490 L1000,430 L1000,750 L0,750 Z" fill="url(#roadGrad)" />
+  <path d="M0,520 Q180,540 320,570 L0,750 Z" fill="#24331e" opacity="0.65" />
+  <path d="M850,470 L1000,440 L1000,560 L890,560 Z" fill="#2d3b24" opacity="0.5" />
+
+  <!-- 2. Car Ground Shadow -->
+  <ellipse cx="530" cy="690" rx="440" ry="48" fill="url(#carShadow)" />
+  <ellipse cx="510" cy="675" rx="360" ry="32" fill="#030405" opacity="0.75" />
+
+  <!-- 3. White Suzuki Swift Bodywork (Front 3/4 Angle) -->
+  <g id="vehicle">
+    
+    <!-- Wheels & Tires -->
+    <!-- Front Right Wheel (Viewer Right) -->
+    <g id="rightWheel">
+      <ellipse cx="800" cy="640" rx="64" ry="76" fill="#151719" />
+      <ellipse cx="798" cy="640" rx="50" ry="62" fill="#2b2f33" />
+      <!-- Multi-spoke alloy rim -->
+      <circle cx="798" cy="640" r="38" fill="#c4cad1" />
+      <circle cx="798" cy="640" r="30" fill="#1d2024" />
+      <!-- Spokes -->
+      <line x1="798" y1="604" x2="798" y2="676" stroke="#cdd3da" stroke-width="6" />
+      <line x1="764" y1="640" x2="832" y2="640" stroke="#cdd3da" stroke-width="6" />
+      <line x1="772" y1="614" x2="824" y2="666" stroke="#cdd3da" stroke-width="6" />
+      <line x1="824" y1="614" x2="772" y2="666" stroke="#cdd3da" stroke-width="6" />
+      <circle cx="798" cy="640" r="10" fill="#717983" />
+      <circle cx="798" cy="640" r="5" fill="#f0f3f6" />
+    </g>
+
+    <!-- Front Left Wheel (Viewer Left) -->
+    <g id="leftWheel">
+      <ellipse cx="180" cy="660" rx="55" ry="68" fill="#131517" />
+      <ellipse cx="182" cy="660" rx="42" ry="54" fill="#282a2e" />
+      <circle cx="182" cy="660" r="30" fill="#bcc2c9" />
+      <circle cx="182" cy="660" r="22" fill="#1a1c1e" />
+      <line x1="182" y1="632" x2="182" y2="688" stroke="#cbd1d8" stroke-width="5" />
+      <line x1="154" y1="660" x2="210" y2="660" stroke="#cbd1d8" stroke-width="5" />
+      <circle cx="182" cy="660" r="8" fill="#69717b" />
+    </g>
+
+    <!-- Car Body Side / Rear Quarter (Angled perspective) -->
+    <path d="M680,260 L850,420 L910,480 L950,560 L940,620 L870,640 L840,580 L760,590 L700,640 L640,640 L640,490 Z" 
+          fill="url(#carSide)" />
+    <!-- Rear passenger door & window frame -->
+    <path d="M720,290 L850,400 L840,480 L700,490 Z" fill="#161b20" opacity="0.9" />
+    <!-- Side Door Body Crease -->
+    <path d="M720,490 Q820,510 930,550" stroke="#aab3be" stroke-width="2.5" fill="none" />
+    <path d="M710,580 Q800,590 860,600" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.6" />
+
+    <!-- Roof & Windshield -->
+    <!-- Black A-pillars (Swift signature floating roof style) -->
+    <path d="M290,380 L350,265 L695,255 L745,360 L705,370 L675,280 L370,285 L320,380 Z" fill="#111518" />
+    <path d="M345,265 L698,255 L690,248 L355,255 Z" fill="#ffffff" />
+    
+    <!-- Windshield Glass -->
+    <path d="M320,378 L370,282 L675,278 L705,368 Q520,385 320,378 Z" fill="url(#glassGrad)" />
+    <!-- Windshield Reflection streaks -->
+    <path d="M420,282 L470,280 L390,376 L340,376 Z" fill="#ffffff" opacity="0.08" />
+    <path d="M540,280 L590,278 L530,372 L480,374 Z" fill="#ffffff" opacity="0.12" />
+    <!-- Interior Rearview mirror -->
+    <rect x="500" y="295" width="48" height="18" rx="4" fill="#0d1114" />
+
+    <!-- Side Mirrors -->
+    <!-- Left Mirror -->
+    <path d="M205,380 C200,380 195,395 205,420 C220,430 250,425 255,410 C258,395 240,380 215,380 Z" fill="#ffffff" stroke="#cbd2db" stroke-width="1.5" />
+    <ellipse cx="230" cy="405" rx="8" ry="3" fill="#ffe082" opacity="0.8" />
+    
+    <!-- Right Mirror -->
+    <path d="M745,370 C755,365 785,370 810,385 C815,405 790,420 765,418 C748,415 740,395 745,370 Z" fill="#ffffff" stroke="#c0c7d0" stroke-width="1.5" />
+
+    <!-- Car Hood (Sweeping 3/4 Perspective) -->
+    <path d="M255,420 Q500,400 740,410 L700,530 Q490,560 210,530 Z" fill="url(#carHood)" />
+    <!-- Hood character lines -->
+    <path d="M325,410 Q350,470 330,525" stroke="#cbd3dd" stroke-width="3" fill="none" />
+    <path d="M327,410 Q352,470 332,525" stroke="#ffffff" stroke-width="1.5" fill="none" />
+    <path d="M685,410 Q660,470 670,520" stroke="#cbd3dd" stroke-width="3" fill="none" />
+    <path d="M683,410 Q658,470 668,520" stroke="#ffffff" stroke-width="1.5" fill="none" />
+
+    <!-- Front Bumper & Main Fascia -->
+    <path d="M120,530 Q480,515 840,525 Q870,575 870,610 Q850,670 760,700 Q510,725 230,715 Q140,690 115,620 Q105,570 120,530 Z" 
+          fill="url(#carBumper)" />
+
+    <!-- Central Hexagonal Grille (Dominant Swift Grille) -->
+    <path d="M280,555 Q490,545 680,555 L650,670 Q485,685 305,670 Z" fill="url(#grilleGrad)" stroke="#1a1c1e" stroke-width="3" />
+    <!-- Grille Honeycomb texture slats -->
+    <g stroke="#22252a" stroke-width="2" opacity="0.8">
+      <line x1="300" y1="575" x2="665" y2="575" />
+      <line x1="300" y1="595" x2="660" y2="595" />
+      <line x1="310" y1="615" x2="650" y2="615" />
+      <line x1="315" y1="635" x2="640" y2="635" />
+      <line x1="325" y1="655" x2="630" y2="655" />
+    </g>
+
+    <!-- Chrome Horizontal Grille Strip (With Blue Accent Flare) -->
+    <path d="M295,612 Q485,618 660,612 L658,619 Q485,625 297,619 Z" fill="url(#chromeBar)" />
+    
+    <!-- Central Suzuki Chrome Logo 'S' -->
+    <g id="suzukiLogo" transform="translate(485, 570) scale(0.95)">
+      <path d="M15,0 L35,0 L20,18 L32,18 C36,18 38,20 38,24 L38,32 C38,36 34,40 30,40 L8,40 L23,22 L11,22 C7,22 5,20 5,16 L5,8 C5,4 9,0 15,0 Z" 
+            fill="#e2e8f0" stroke="#718096" stroke-width="1.5" />
+      <path d="M17,4 L31,4 L17,20 L30,20 C32,20 33,21 33,23 L33,30 C33,32 31,34 29,34 L15,34 L29,18 L16,18 C14,18 13,17 13,15 L13,8 C13,6 15,4 17,4 Z" 
+            fill="#ffffff" />
+    </g>
+
+    <!-- Glowing Blue/White Flare On The Chrome Grille Line (Authentic to user upload!) -->
+    <ellipse cx="430" cy="615" rx="55" ry="14" fill="url(#blueGlint)" />
+    <ellipse cx="430" cy="615" rx="20" ry="6" fill="#ffffff" />
+    <path d="M370,615 L490,615" stroke="#ffffff" stroke-width="2.5" />
+    <path d="M430,595 L430,635" stroke="#ffffff" stroke-width="2" opacity="0.9" />
+
+    <!-- Left Headlight Assembly (Warm Halogen Glow - Viewer Left) -->
+    <g id="leftHeadlight">
+      <path d="M140,510 Q210,480 270,515 Q260,570 195,595 Q140,580 140,510 Z" 
+            fill="#1d2228" stroke="#8c96a3" stroke-width="2" />
+      <!-- Inner reflector cups -->
+      <ellipse cx="190" cy="545" rx="35" ry="25" fill="#f8fafc" opacity="0.95" />
+      <!-- Intense warm halogen light beam / glow -->
+      <ellipse cx="190" cy="545" rx="42" ry="32" fill="url(#headlightGlow)" />
+      <circle cx="192" cy="545" r="14" fill="#ffffff" />
+      <!-- Outer glass lens cover -->
+      <path d="M142,512 Q208,483 266,517 Q256,568 195,592 Q142,578 142,512 Z" 
+            fill="none" stroke="#e2e8f0" stroke-width="3" opacity="0.8" />
+    </g>
+
+    <!-- Right Headlight Assembly (Viewer Right) -->
+    <g id="rightHeadlight">
+      <path d="M690,515 Q760,480 830,520 Q830,585 765,600 Q700,575 690,515 Z" 
+            fill="#1d2228" stroke="#8c96a3" stroke-width="2" />
+      <!-- Inner reflector -->
+      <ellipse cx="760" cy="550" rx="38" ry="26" fill="#f8fafc" opacity="0.95" />
+      <!-- Halogen Warm Glow -->
+      <ellipse cx="760" cy="550" rx="46" ry="34" fill="url(#headlightGlow)" />
+      <circle cx="758" cy="550" r="15" fill="#ffffff" />
+      <!-- Outer glass cover -->
+      <path d="M692,517 Q758,483 826,522 Q826,583 765,597 Q702,573 692,517 Z" 
+            fill="none" stroke="#e2e8f0" stroke-width="3" opacity="0.8" />
+    </g>
+
+    <!-- Lower Bumper Intake & Fog Lights -->
+    <!-- Lower chin spoiler / black air vent -->
+    <path d="M330,685 Q490,695 650,685 L640,710 Q490,720 340,710 Z" fill="#14171a" />
+
+    <!-- Left Fog Light Pod & Glowing Lamp -->
+    <g id="leftFog">
+      <ellipse cx="185" cy="640" rx="32" ry="28" fill="#17191d" stroke="#2a2e34" stroke-width="2" />
+      <circle cx="185" cy="640" r="20" fill="url(#fogGlow)" />
+      <circle cx="185" cy="640" r="8" fill="#ffffff" />
+    </g>
+
+    <!-- Right Fog Light Pod & Glowing Lamp -->
+    <g id="rightFog">
+      <ellipse cx="770" cy="645" rx="34" ry="30" fill="#17191d" stroke="#2a2e34" stroke-width="2" />
+      <circle cx="770" cy="645" r="22" fill="url(#fogGlow)" />
+      <circle cx="770" cy="645" r="9" fill="#ffffff" />
+    </g>
+
+    <!-- Front Bumper Sculpting Highlights -->
+    <path d="M210,695 Q490,720 770,700" stroke="#ffffff" stroke-width="2.5" fill="none" opacity="0.8" />
+    <path d="M130,610 Q180,630 220,685" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.5" />
+    <path d="M840,615 Q790,635 760,685" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.5" />
+
+  </g>
+</svg>
