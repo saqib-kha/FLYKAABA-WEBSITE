@@ -22,6 +22,16 @@ interface BookingFlowViewProps {
   onBackToCategory: (category: string) => void;
   onConfirmBooking: (booking: BookingRecord) => void;
   currentUser?: { name: string; email: string; role: string } | null;
+  initialBookingDetails?: {
+    pickupCity: string;
+    destinationCity: string;
+    travelDate: string;
+    pickupTime: string;
+    tripType: 'one-way' | 'round-trip';
+    serviceType?: 'point-to-point' | 'hourly' | 'ziyarat';
+    priceSar?: number;
+    hours?: number;
+  };
 }
 
 export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
@@ -31,20 +41,21 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
   onBackToCategory,
   onConfirmBooking,
   currentUser,
+  initialBookingDetails,
 }) => {
-  // Step 1: Rental details, Step 2: Passenger details & Review, Step 3: Confirmation
-  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
+  // If coming directly from route search, start on Step 2 (Passenger Details & Review & Reserve)
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(initialBookingDetails ? 2 : 1);
 
   // Form Fields
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [pickupTime, setPickupTime] = useState('');
+  const [startDate, setStartDate] = useState(initialBookingDetails?.travelDate || '');
+  const [endDate, setEndDate] = useState(initialBookingDetails?.travelDate || '');
+  const [pickupTime, setPickupTime] = useState(initialBookingDetails?.pickupTime || '');
   const [returnTime, setReturnTime] = useState('');
-  const [pickupCity, setPickupCity] = useState('');
-  const [dropoffCity, setDropoffCity] = useState('No drop-off city');
+  const [pickupCity, setPickupCity] = useState(initialBookingDetails?.pickupCity || '');
+  const [dropoffCity, setDropoffCity] = useState(initialBookingDetails?.destinationCity || 'No drop-off city');
 
   // Passenger Details
-  const [customerName, setCustomerName] = useState(currentUser?.name || '');
+  const [customerName, setCustomerName] = useState(currentUser?.name || 'Sara');
   const [customerPhone, setCustomerPhone] = useState('+966 50 123 4567');
   const [customerEmail, setCustomerEmail] = useState(currentUser?.email || 'sara@example.com');
   const [specialNotes, setSpecialNotes] = useState('');
@@ -63,7 +74,9 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
   };
 
   const daysCount = calculateDays();
-  const totalPrice = vehicle.pricePerDay * daysCount;
+  const totalPrice = initialBookingDetails?.priceSar 
+    ? initialBookingDetails.priceSar 
+    : vehicle.pricePerDay * daysCount;
 
   // Validate Step 1
   const handleProceedToReview = (e: React.FormEvent) => {

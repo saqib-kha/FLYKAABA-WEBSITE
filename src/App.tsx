@@ -34,6 +34,7 @@ import { CompanyProfilePageView } from './components/CompanyProfilePageView';
 import { SearchVehiclesPageView } from './components/SearchVehiclesPageView';
 import { HowItWorksPageView } from './components/HowItWorksPageView';
 import { RoutesPageView } from './components/RoutesPageView';
+import { RouteResultsPageView } from './components/RouteResultsPageView';
 import { MakkahZiyaratPageView } from './components/MakkahZiyaratPageView';
 import { MadinaZiyaratPageView } from './components/MadinaZiyaratPageView';
 import { ListCompanyPageView } from './components/ListCompanyPageView';
@@ -101,10 +102,20 @@ export default function App() {
   });
 
   // Modal / View Controls
-  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'vehicles' | 'how-it-works' | 'ziyarat-makkah' | 'ziyarat-madina' | 'list-company' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'route-results' | 'vehicles' | 'how-it-works' | 'ziyarat-makkah' | 'ziyarat-madina' | 'list-company' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard'>('home');
   const [showInsForgeModal, setShowInsForgeModal] = useState(false);
   const [selectedCategoryPage, setSelectedCategoryPage] = useState<string | null>(null);
   const [bookingVehicle, setBookingVehicle] = useState<Vehicle | null>(null);
+  const [bookingRouteDetails, setBookingRouteDetails] = useState<{
+    pickupCity: string;
+    destinationCity: string;
+    travelDate: string;
+    pickupTime: string;
+    tripType: 'one-way' | 'round-trip';
+    serviceType?: 'point-to-point' | 'hourly' | 'ziyarat';
+    priceSar?: number;
+    hours?: number;
+  } | null>(null);
   const [searchResults, setSearchResults] = useState<SearchParams | null>(null);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [vehicleModalStep, setVehicleModalStep] = useState<'details' | 'booking-form'>('details');
@@ -167,9 +178,64 @@ export default function App() {
     loadInsForgeData();
   }, []);
 
+  // URL Query Sync on mount and back/forward navigation
+  const syncUrlToSearchState = () => {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pickup = urlParams.get('pickup') || urlParams.get('pickupCity');
+      const destination = urlParams.get('destination') || urlParams.get('dropoffCity');
+      const date = urlParams.get('date') || urlParams.get('travelDate') || '2026-10-25';
+      const time = urlParams.get('time') || urlParams.get('pickupTime') || '13:30';
+      const tripType = (urlParams.get('tripType') === 'round-trip' ? 'round-trip' : 'one-way') as 'one-way' | 'round-trip';
+      const view = urlParams.get('view');
+
+      if (pickup && destination) {
+        setSearchResults({
+          pickupCity: pickup,
+          dropoffCity: destination,
+          travelDate: date,
+          pickupTime: time,
+          tripType: tripType,
+        });
+        setActiveView('route-results');
+      } else if (view && ['home', 'agencies', 'routes', 'vehicles', 'how-it-works', 'list-company'].includes(view)) {
+        setActiveView(view as any);
+        setSearchResults(null);
+      } else {
+        setActiveView('home');
+        setSearchResults(null);
+      }
+    } catch (err) {
+      console.warn('URL parsing note:', err);
+    }
+  };
+
+  useEffect(() => {
+    syncUrlToSearchState();
+    const handlePopState = () => syncUrlToSearchState();
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   // Handlers
   const handleSearch = (params: SearchParams) => {
     setSearchResults(params);
+    setActiveView('route-results');
+    setSelectedCategoryPage(null);
+    setBookingVehicle(null);
+    setSelectedAgency(null);
+
+    // Dynamic Route Results URL generation matching Requirement 2
+    const query = `?pickup=${encodeURIComponent(params.pickupCity)}&destination=${encodeURIComponent(params.dropoffCity)}&date=${encodeURIComponent(params.travelDate)}&time=${encodeURIComponent(params.pickupTime || '13:30')}&tripType=${encodeURIComponent(params.tripType)}`;
+    window.history.pushState({ view: 'route-results', search: params }, '', query);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBookVehicleFromRoute = (vehicle: Vehicle, routeDetails?: any) => {
+    setSelectedVehicle(null);
+    setBookingRouteDetails(routeDetails || null);
+    setBookingVehicle(vehicle);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectCategory = (categoryTitle: string) => {
@@ -201,6 +267,9 @@ export default function App() {
     setSelectedCategoryPage(null);
     setBookingVehicle(null);
     setSelectedAgency(null);
+    setBookingRouteDetails(null);
+    setSearchResults(null);
+    window.history.pushState(null, '', window.location.pathname);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -414,13 +483,36 @@ export default function App() {
             onGoHome={handleGoHome}
             onBackToCategory={(category) => {
               setBookingVehicle(null);
-              setSelectedCategoryPage(category);
+              if (activeView === 'route-results' && searchResults) {
+                // keep on route-results
+              } else {
+                setSelectedCategoryPage(category);
+              }
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onConfirmBooking={(booking) => {
               handleConfirmBooking(booking);
             }}
             currentUser={currentUser}
+            initialBookingDetails={bookingRouteDetails || (searchResults ? {
+              pickupCity: searchResults.pickupCity,
+              destinationCity: searchResults.dropoffCity,
+              travelDate: searchResults.travelDate,
+              pickupTime: searchResults.pickupTime,
+              tripType: searchResults.tripType,
+              priceSar: bookingVehicle.pricePerDay,
+            } : undefined)}
+          />
+        ) : activeView === 'route-results' && searchResults ? (
+          <RouteResultsPageView
+            searchParams={searchResults}
+            allVehicles={vehicles}
+            agencies={agencies}
+            onGoHome={handleGoHome}
+            onGoToRoutes={handleOpenRoutes}
+            onBookVehicle={handleBookVehicleFromRoute}
+            onSelectVehicle={handleOpenVehicleDetails}
+            onUpdateSearch={handleSearch}
           />
         ) : selectedCategoryPage ? (
           <CategoryPageView
@@ -621,22 +713,6 @@ export default function App() {
       />
 
       {/* ================= MODALS & ACTIVE OVERLAYS ================= */}
-
-      {/* Search Results Modal */}
-      {searchResults && (
-        <SearchResultsModal
-          searchParams={searchResults}
-          allVehicles={vehicles}
-          agencies={agencies}
-          onClose={() => setSearchResults(null)}
-          onSelectVehicle={handleOpenVehicleDetails}
-          onBookVehicle={handleOpenVehicleBooking}
-          onModifySearch={() => {
-            setSearchResults(null);
-            window.scrollTo({ top: 100, behavior: 'smooth' });
-          }}
-        />
-      )}
 
       {/* Vehicle Details & Booking Modal */}
       {selectedVehicle && (

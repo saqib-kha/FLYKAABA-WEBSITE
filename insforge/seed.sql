@@ -58,3 +58,17 @@ VALUES
 ON CONFLICT (id) DO UPDATE SET
   title = EXCLUDED.title,
   excerpt = EXCLUDED.excerpt;
+
+-- 6. SEED VEHICLE ROUTE ASSIGNMENTS
+INSERT INTO public.vehicle_routes (id, vehicle_id, route_id, pickup_city, destination_city, one_way_price_sar, round_trip_price_sar, hourly_rate_sar, daily_rate_sar, estimated_duration, is_active)
+VALUES
+  ('vr-1', 'veh-1', 'route-2', 'Makkah', 'Madinah', 950, 1800, 180, 450, '4 hr 15 min', true),
+  ('vr-2', 'veh-1', 'route-1', 'Makkah', 'Jeddah', 500, 950, 180, 450, '1 hr 15 min', true),
+  ('vr-3', 'veh-2', 'route-2', 'Makkah', 'Madinah', 1200, 2300, 220, 600, '4 hr 15 min', true),
+  ('vr-4', 'veh-3', 'route-1', 'Makkah', 'Jeddah', 200, 380, 80, 220, '1 hr 15 min', true),
+  ('vr-5', 'veh-3', 'route-2', 'Makkah', 'Madinah', 600, 1100, 80, 220, '4 hr 15 min', true),
+  ('vr-6', 'veh-4', 'route-1', 'Makkah', 'Jeddah', 380, 720, 140, 380, '1 hr 15 min', true),
+  ('vr-7', 'veh-4', 'route-2', 'Makkah', 'Madinah', 850, 1600, 140, 380, '4 hr 15 min', true)
+ON CONFLICT (id) DO UPDATE SET
+  one_way_price_sar = EXCLUDED.one_way_price_sar,
+  round_trip_price_sar = EXCLUDED.round_trip_price_sar;

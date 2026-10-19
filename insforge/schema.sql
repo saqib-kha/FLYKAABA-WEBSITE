@@ -120,6 +120,32 @@ CREATE TABLE IF NOT EXISTS public.routes (
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
+-- 7.1 VEHICLE ROUTE ASSIGNMENTS & DYNAMIC PRICING TABLE
+CREATE TABLE IF NOT EXISTS public.vehicle_routes (
+  id TEXT PRIMARY KEY DEFAULT ('vr-' || substr(md5(random()::text), 1, 8)),
+  vehicle_id TEXT NOT NULL REFERENCES public.vehicles(id) ON DELETE CASCADE,
+  route_id TEXT REFERENCES public.routes(id) ON DELETE SET NULL,
+  pickup_city TEXT NOT NULL,
+  destination_city TEXT NOT NULL,
+  one_way_price_sar INT NOT NULL,
+  round_trip_price_sar INT,
+  hourly_rate_sar INT,
+  daily_rate_sar INT,
+  estimated_duration TEXT,
+  is_active BOOLEAN DEFAULT true NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+  CONSTRAINT unique_vehicle_route UNIQUE (vehicle_id, pickup_city, destination_city)
+);
+
+-- 7.2 VEHICLE SCHEDULES & AVAILABILITY TABLE
+CREATE TABLE IF NOT EXISTS public.vehicle_schedules (
+  id TEXT PRIMARY KEY DEFAULT ('vs-' || substr(md5(random()::text), 1, 8)),
+  vehicle_id TEXT NOT NULL REFERENCES public.vehicles(id) ON DELETE CASCADE,
+  unavailable_date DATE NOT NULL,
+  reason TEXT DEFAULT 'Reserved Trip',
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
 -- 8. BOOKINGS TABLE
 CREATE TABLE IF NOT EXISTS public.bookings (
   id TEXT PRIMARY KEY DEFAULT ('book-' || substr(md5(random()::text), 1, 8)),
@@ -189,6 +215,9 @@ CREATE INDEX IF NOT EXISTS idx_bookings_customer_id ON public.bookings(customer_
 CREATE INDEX IF NOT EXISTS idx_bookings_agency_id ON public.bookings(agency_id);
 CREATE INDEX IF NOT EXISTS idx_bookings_reference ON public.bookings(reference_number);
 CREATE INDEX IF NOT EXISTS idx_reviews_agency_id ON public.reviews(agency_id);
+CREATE INDEX IF NOT EXISTS idx_vehicle_routes_cities ON public.vehicle_routes(pickup_city, destination_city);
+CREATE INDEX IF NOT EXISTS idx_vehicle_routes_vehicle ON public.vehicle_routes(vehicle_id);
+CREATE INDEX IF NOT EXISTS idx_vehicle_schedules_date ON public.vehicle_schedules(vehicle_id, unavailable_date);
 
 -- ==============================================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
@@ -200,6 +229,8 @@ ALTER TABLE public.agencies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.vehicles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.routes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.vehicle_routes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.vehicle_schedules ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.blog_posts ENABLE ROW LEVEL SECURITY;
@@ -240,6 +271,24 @@ CREATE POLICY "Agency owners manage vehicles" ON public.vehicles
       AND public.agencies.owner_id = auth.uid()
     )
   );
+
+-- VEHICLE ROUTES POLICIES (Public read active routes, Agency owners manage)
+CREATE POLICY "Public read active vehicle routes" ON public.vehicle_routes
+  FOR SELECT USING (is_active = true);
+
+CREATE POLICY "Agency owners manage vehicle routes" ON public.vehicle_routes
+  FOR ALL USING (
+    EXISTS (
+      SELECT 1 FROM public.vehicles
+      JOIN public.agencies ON public.agencies.id = public.vehicles.agency_id
+      WHERE public.vehicles.id = public.vehicle_routes.vehicle_id
+      AND public.agencies.owner_id = auth.uid()
+    )
+  );
+
+-- VEHICLE SCHEDULES POLICIES (Public read schedules for availability validation)
+CREATE POLICY "Public read vehicle schedules" ON public.vehicle_schedules
+  FOR SELECT USING (true);
 
 -- BOOKINGS POLICIES (Customers see own bookings, Agencies see bookings for their fleet)
 CREATE POLICY "Customers view own bookings" ON public.bookings

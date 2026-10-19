@@ -252,7 +252,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigateTo
             )}
 
             {/* Search Input Fields Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+            <div className={`grid grid-cols-1 sm:grid-cols-2 ${tripType === 'round-trip' ? 'lg:grid-cols-6' : 'lg:grid-cols-5'} gap-3 items-end`}>
               
               {/* Field 1: Pickup City */}
               <div className="relative" ref={pickupRef}>
@@ -378,8 +378,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigateTo
                 </div>
               </div>
 
-              {/* Field 4: Return Date (if Round-Way) OR Pickup Time */}
-              {tripType === 'round-trip' ? (
+              {/* Field 4 (If Round-Trip): Return Date */}
+              {tripType === 'round-trip' && (
                 <div>
                   <label className="block text-xs font-semibold text-[#111111] mb-1.5">
                     Return date
@@ -392,22 +392,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigateTo
                     className="w-full h-11 px-3 bg-white border border-[#E5E1D8] rounded-[10px] text-xs sm:text-sm text-[#111111] focus:outline-none focus:border-[#C9A01B] focus:ring-1 focus:ring-[#C9A01B] transition-all cursor-pointer"
                   />
                 </div>
-              ) : (
-                <div>
-                  <label className="block text-xs font-semibold text-[#111111] mb-1.5">
-                    Pickup time
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="time"
-                      value={pickupTime}
-                      onChange={(e) => setPickupTime(e.target.value)}
-                      placeholder="--:-- --"
-                      className="w-full h-11 px-3 bg-white border border-[#E5E1D8] rounded-[10px] text-xs sm:text-sm text-[#111111] focus:outline-none focus:border-[#C9A01B] focus:ring-1 focus:ring-[#C9A01B] transition-all"
-                    />
-                  </div>
-                </div>
               )}
+
+              {/* Field 5: Pickup Time (Always Present) */}
+              <div>
+                <label className="block text-xs font-semibold text-[#111111] mb-1.5">
+                  Pickup time
+                </label>
+                <div className="relative">
+                  <input
+                    type="time"
+                    value={pickupTime}
+                    onChange={(e) => setPickupTime(e.target.value)}
+                    placeholder="--:-- --"
+                    className="w-full h-11 px-3 bg-white border border-[#E5E1D8] rounded-[10px] text-xs sm:text-sm text-[#111111] focus:outline-none focus:border-[#C9A01B] focus:ring-1 focus:ring-[#C9A01B] transition-all"
+                  />
+                </div>
+              </div>
 
               {/* Search Button */}
               <div>

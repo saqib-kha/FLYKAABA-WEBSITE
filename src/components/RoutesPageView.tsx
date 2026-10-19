@@ -120,6 +120,13 @@ export const RoutesPageView: React.FC<RoutesPageViewProps> = ({
       image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700&auto=format&fit=crop&q=80',
     },
     {
+      id: 'route-makkah-riyadh',
+      fromCity: 'Makkah',
+      toCity: 'Riyadh',
+      vehicleCount: 0,
+      image: 'https://images.unsplash.com/photo-1542296332-2e4473faf563?w=700&auto=format&fit=crop&q=80',
+    },
+    {
       id: 'route-makkah-med',
       fromCity: 'Makkah',
       toCity: 'Madinah Airport (MED)',

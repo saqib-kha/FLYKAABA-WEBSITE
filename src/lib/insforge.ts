@@ -16,8 +16,8 @@ import {
 } from '../data/mockData';
 
 // InsForge Configuration Resolution (from .env.local / env vars or defaults)
-const DEFAULT_PROJECT_ID = import.meta.env.VITE_INSFORGE_PROJECT_ID || 'hi4ydxt3';
-const DEFAULT_URL = import.meta.env.VITE_INSFORGE_URL || 'https://hi4ydxt3.us-east.insforge.app';
+const DEFAULT_PROJECT_ID = import.meta.env.VITE_INSFORGE_PROJECT_ID || '3e88k6qq';
+const DEFAULT_URL = import.meta.env.VITE_INSFORGE_URL || 'https://3e88k6qq.us-east.insforge.app';
 const DEFAULT_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || 'ik_c93abb31879721dddfab27ce147d3776';
 
 export interface InsForgeConfigState {
@@ -427,6 +427,46 @@ class InsForgeService {
       return allVehicles.filter(v => v.category.toLowerCase().includes(categoryFilter.toLowerCase()));
     }
     return allVehicles;
+  }
+
+  /**
+   * Query vehicles matching a specific route and travel criteria
+   */
+  public async getRouteVehicles(params: {
+    pickupCity: string;
+    destinationCity: string;
+    travelDate?: string;
+    tripType?: 'one-way' | 'round-trip';
+  }): Promise<{
+    exactMatches: Vehicle[];
+    alternatives: Vehicle[];
+    isExactRouteAvailable: boolean;
+  }> {
+    const all = await this.getVehicles();
+    const pickupNorm = params.pickupCity.trim().toLowerCase();
+    const destNorm = params.destinationCity.trim().toLowerCase();
+
+    // Query exact route matches
+    const exactMatches = all.filter(v => {
+      if (!v.isAvailable) return false;
+      return v.supportedRoutes?.some(r => 
+        r.fromCity.toLowerCase() === pickupNorm && 
+        r.toCity.toLowerCase() === destNorm && 
+        r.isAvailable !== false
+      );
+    });
+
+    // Query alternatives based from pickup city
+    const alternatives = all.filter(v => {
+      if (!v.isAvailable) return false;
+      return v.city.toLowerCase() === pickupNorm || (v.coversCity && v.coversCity.toLowerCase() === pickupNorm);
+    });
+
+    return {
+      exactMatches,
+      alternatives: exactMatches.length > 0 ? [] : alternatives,
+      isExactRouteAvailable: exactMatches.length > 0,
+    };
   }
 
   // ============================================================================
