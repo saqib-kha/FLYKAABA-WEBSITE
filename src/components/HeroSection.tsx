@@ -522,11 +522,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigateTo
         <div className="mt-6">
           <button
             onClick={onNavigateToBlog}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/60 hover:bg-black/80 border border-white/20 text-white text-xs sm:text-sm font-medium transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
+            className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-black/60 hover:bg-black/85 border border-white/20 hover:border-[#C9A01B]/60 text-white text-xs sm:text-sm font-medium transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm hover:shadow-[0_4px_16px_rgba(201,160,27,0.2)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#C9A01B]/50"
+            title="Explore FlyKaaba Blog Articles & Travel Guides"
           >
-            <BookOpen className="w-3.5 h-3.5 text-[#C9A01B]" />
-            <span>Read Our Latest Blog Posts</span>
-            <ChevronRight className="w-3.5 h-3.5 text-white/70" />
+            <BookOpen className="w-3.5 h-3.5 text-[#C9A01B] group-hover:scale-110 transition-transform" />
+            <span className="group-hover:text-white transition-colors">Read Our Latest Blog Posts</span>
+            <ChevronRight className="w-3.5 h-3.5 text-white/70 group-hover:text-[#C9A01B] group-hover:translate-x-0.5 transition-all" />
           </button>
         </div>
 

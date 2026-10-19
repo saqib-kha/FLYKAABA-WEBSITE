@@ -23,7 +23,8 @@ import { AllVehiclesModal } from './components/AllVehiclesModal';
 import { CompanyRegistrationModal } from './components/CompanyRegistrationModal';
 import { RoutesModal } from './components/RoutesModal';
 import { ZiyaratModal } from './components/ZiyaratModal';
-import { BlogReaderModal } from './components/BlogReaderModal';
+import { BlogsPageView } from './components/BlogsPageView';
+import { BlogPostDetailView } from './components/BlogPostDetailView';
 import { AuthModal } from './components/AuthModal';
 import { MyBookingsModal } from './components/MyBookingsModal';
 import { HowItWorksModal } from './components/HowItWorksModal';
@@ -101,8 +102,7 @@ export default function App() {
     return saved ? JSON.parse(saved) : { name: 'Sara', email: 'sara@example.com', role: 'Verified Traveler' };
   });
 
-  // Modal / View Controls
-  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'route-results' | 'vehicles' | 'how-it-works' | 'ziyarat-makkah' | 'ziyarat-madina' | 'list-company' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'route-results' | 'vehicles' | 'how-it-works' | 'ziyarat-makkah' | 'ziyarat-madina' | 'list-company' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard' | 'blogs' | 'blog-detail'>('home');
   const [showInsForgeModal, setShowInsForgeModal] = useState(false);
   const [selectedCategoryPage, setSelectedCategoryPage] = useState<string | null>(null);
   const [bookingVehicle, setBookingVehicle] = useState<Vehicle | null>(null);
@@ -198,8 +198,19 @@ export default function App() {
           tripType: tripType,
         });
         setActiveView('route-results');
-      } else if (view && ['home', 'agencies', 'routes', 'vehicles', 'how-it-works', 'list-company'].includes(view)) {
-        setActiveView(view as any);
+      } else if (view && ['home', 'agencies', 'routes', 'vehicles', 'how-it-works', 'list-company', 'blogs', 'blog'].includes(view)) {
+        if (view === 'blog') {
+          const slug = urlParams.get('slug');
+          const matched = BLOG_POSTS.find(p => p.slug === slug);
+          if (matched) {
+            setSelectedBlogPost(matched);
+            setActiveView('blog-detail');
+          } else {
+            setActiveView('blogs');
+          }
+        } else {
+          setActiveView(view as any);
+        }
         setSearchResults(null);
       } else {
         setActiveView('home');
@@ -264,6 +275,7 @@ export default function App() {
 
   const handleGoHome = () => {
     setActiveView('home');
+    setSelectedBlogPost(null);
     setSelectedCategoryPage(null);
     setBookingVehicle(null);
     setSelectedAgency(null);
@@ -433,9 +445,27 @@ export default function App() {
     });
   };
 
+  const handleOpenBlogs = () => {
+    setActiveView('blogs');
+    setSelectedBlogPost(null);
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    setSearchResults(null);
+    window.history.pushState({ view: 'blogs' }, '', '?view=blogs');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectBlogPost = (post: BlogPost) => {
+    setSelectedBlogPost(post);
+    setActiveView('blog-detail');
+    window.history.pushState({ view: 'blog-detail', slug: post.slug }, '', `?view=blog&slug=${post.slug}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleQuickLink = (linkTitle: string) => {
     if (linkTitle === 'Blogs') {
-      window.scrollTo({ top: document.body.scrollHeight - 1600, behavior: 'smooth' });
+      handleOpenBlogs();
     } else if (linkTitle === 'Cities') {
       handleOpenRoutes();
     } else if (linkTitle === 'How It Works for Companies') {
@@ -653,17 +683,26 @@ export default function App() {
             onCancelBooking={handleCancelBooking}
             onOpenInsForgeModal={() => setShowInsForgeModal(true)}
           />
+        ) : activeView === 'blogs' ? (
+          <BlogsPageView
+            posts={BLOG_POSTS}
+            onSelectPost={handleSelectBlogPost}
+            onGoHome={handleGoHome}
+          />
+        ) : activeView === 'blog-detail' && selectedBlogPost ? (
+          <BlogPostDetailView
+            post={selectedBlogPost}
+            allPosts={BLOG_POSTS}
+            onBackToBlogs={handleOpenBlogs}
+            onGoHome={handleGoHome}
+            onSelectPost={handleSelectBlogPost}
+          />
         ) : (
           <>
             {/* 1. Hero Section matching Screenshot 1 */}
             <HeroSection
               onSearch={handleSearch}
-              onNavigateToBlog={() => {
-                const blogElem = document.getElementById('blog-section');
-                if (blogElem) {
-                  blogElem.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
+              onNavigateToBlog={handleOpenBlogs}
             />
 
             {/* 2. Car Categories Section matching Screenshot 2 */}
@@ -698,8 +737,8 @@ export default function App() {
             <div id="blog-section">
               <BlogSection
                 posts={BLOG_POSTS}
-                onSelectPost={(post) => setSelectedBlogPost(post)}
-                onViewAllPosts={() => setSelectedBlogPost(BLOG_POSTS[0])}
+                onSelectPost={(post) => handleSelectBlogPost(post)}
+                onViewAllPosts={handleOpenBlogs}
               />
             </div>
           </>
@@ -792,14 +831,6 @@ export default function App() {
           destination={selectedZiyarat}
           onClose={() => setSelectedZiyarat(null)}
           onBookZiyarat={handleBookZiyarat}
-        />
-      )}
-
-      {/* Blog Article Reader Modal */}
-      {selectedBlogPost && (
-        <BlogReaderModal
-          post={selectedBlogPost}
-          onClose={() => setSelectedBlogPost(null)}
         />
       )}
 

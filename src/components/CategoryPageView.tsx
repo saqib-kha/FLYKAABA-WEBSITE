@@ -85,37 +85,20 @@ export const CategoryPageView: React.FC<CategoryPageViewProps> = ({
   return (
     <div className="w-full bg-white pb-16">
       
-      {/* 1. Header Banner & Breadcrumb matching Screenshot 1.PNG */}
-      <div className="w-full bg-[#FAF7EE] border-b border-[#EAE5D9] py-8 sm:py-12">
-        <div className="max-w-[1140px] mx-auto px-4 sm:px-6">
-          
-          {/* Breadcrumb matching Screenshot 1.PNG */}
-          <nav className="flex items-center gap-1.5 text-xs text-[#6B7280] mb-4">
-            <button
-              onClick={onGoHome}
-              className="flex items-center gap-1 hover:text-[#C9A01B] transition-colors"
-            >
-              <Home className="w-3.5 h-3.5" />
-              <span>Home</span>
-            </button>
-            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-            <span className="font-medium text-[#111111]">{currentCategory}</span>
-          </nav>
-
-          {/* Page Heading matching Screenshot 1.PNG */}
-          <h1 className="font-playfair text-[#111111] text-3xl sm:text-4xl font-bold tracking-tight capitalize mb-4">
-            {currentCategory.toLowerCase()}
-          </h1>
-
-          {/* Description text matching Screenshot 1.PNG */}
-          <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed max-w-4xl">
-            Compare {currentCategory} vehicles from verified companies across Saudi Arabia and send a booking request. Compare {currentCategory} vehicles from verified companies across Saudi Arabia and send a booking request. Compare {currentCategory} vehicles from verified companies across Saudi Arabia and send a booking request. Compare {currentCategory} vehicles from verified companies across Saudi Arabia and send a booking request.
-          </p>
-
-        </div>
-      </div>
-
-      <div className="max-w-[1140px] mx-auto px-4 sm:px-6 pt-8">
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-6 pt-6">
+        
+        {/* Clean Breadcrumb Navigation */}
+        <nav className="flex items-center gap-1.5 text-xs text-[#6B7280] mb-6">
+          <button
+            onClick={onGoHome}
+            className="flex items-center gap-1 hover:text-[#C9A01B] transition-colors cursor-pointer"
+          >
+            <Home className="w-3.5 h-3.5" />
+            <span>Home</span>
+          </button>
+          <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+          <span className="font-medium text-[#111111]">{currentCategory}</span>
+        </nav>
         
         {/* 2. Browse another category Pill Bar matching Screenshot 1.PNG */}
         <div className="mb-10">

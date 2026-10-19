@@ -123,6 +123,16 @@ export interface ZiyaratDestination {
   priceEstimateSar: number;
 }
 
+export interface BlogTableData {
+  headers: string[];
+  rows: string[][];
+}
+
+export interface BlogFaqItem {
+  question: string;
+  answer: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -131,9 +141,14 @@ export interface BlogPost {
   excerpt: string;
   content: string;
   date: string;
+  dateFormatted?: string;
   image: string;
   author: string;
   readTime: string;
+  tableData?: BlogTableData;
+  faqs?: BlogFaqItem[];
+  checklist?: string[];
+  documents?: string[];
 }
 
 export interface FaqItem {
@@ -1048,51 +1063,106 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
 ];
 
-// Blog Posts matching Screenshots 6 & 7
+// Blog Posts matching Screenshots 6 & 7 & User Uploaded Blog Pages
 export const BLOG_POSTS: BlogPost[] = [
   {
     id: 'blog-1',
     title: "How to Rent a Car in Saudi Arabia: A First-Timer's Guide",
-    slug: 'how-to-rent-a-car-in-saudi-arabia',
+    slug: 'how-to-rent-a-car-in-saudi-arabia-a-first-timers-guide',
     categories: ['Car Rental', 'Travel Tips'],
     excerpt: 'Documents, car choice, pricing, pickup and return — a simple step-by-step guide for anyone renting a car in Saudi Arabia for the first time.',
-    content: `Renting a vehicle in Saudi Arabia has become remarkably straightforward thanks to recent transport modernization and tourist e-visas. Whether arriving at King Abdulaziz International Airport in Jeddah for Umrah or exploring Riyadh's commercial towers, having private wheels grants unparalleled freedom.
+    content: `Renting a car is the easiest way to move at your own pace in Saudi Arabia, where cities are spread out and public transport does not reach every place you may want to visit. For a first-timer, though, the process can feel unfamiliar: which documents do you need, what does the price include, and how do you avoid surprises at pickup?
 
-Key Documents Needed:
-1. Valid Passport with tourist or Umrah entry stamp.
-2. Valid International Driving Permit (IDP) along with your original national driver's license (or GCC driving license).
-3. Major credit card for security pre-authorizations.
-4. Active local or roaming phone number for GPS navigation and company communications.
+This guide walks through the whole journey — from choosing a vehicle to handing back the keys — so you can book with confidence.
 
-Tips for First-Time Drivers:
-- Highways are wide, modern, and heavily monitored with automated Saher speed cameras. Maintain speed limits strictly.
-- When driving into Makkah, private non-Muslim drivers must use the Haramain bypass roads; only authorized Muslim pilgrims and transport providers may enter the central Haram zone.
-- Fuel prices are very reasonable across Petromin, SASCO, and Aldrees stations. Keep credit cards or Apple Pay ready at fuel pumps.`,
+### Before You Book
+A little preparation saves a lot of time at the counter. Decide the dates and the pickup and return cities first, because availability and prices depend on both. If you plan to drive between cities, tell the company up front so the right vehicle and terms are offered.
+
+### Documents to prepare
+- Your passport and visa or residence permit.
+- A valid driving licence from your home country. Whether an international driving permit is also needed depends on your licence and nationality, so check the current rules with the company you book with and with official sources before you travel.
+- A payment method for the booking and any security deposit the company asks for.
+- Your booking confirmation, saved on your phone.
+
+### Choosing the Right Car
+Pick the smallest vehicle that fits your group and luggage comfortably. A bigger vehicle costs more per day and is harder to park in busy city centres. Use the table below as a rough starting point.
+
+### Understanding the Price
+On the marketplace the total is worked out when you send your booking request: the daily price multiplied by the number of days, plus any route price if the vehicle is booked with a driver for a specific route. The company then confirms or declines your request, and a private chat opens so you can agree pickup details directly.
+
+Always read what a listing says about the security deposit, the daily distance allowance, fuel policy and insurance. These are the details that change the real cost of a rental, and they are worth asking about in the chat before you confirm.
+
+### Pickup and Return Checklist
+- Walk around the car with the company representative and note existing scratches or dents — photograph them.
+- Check the fuel level, the tyres and that the air conditioning works.
+- Confirm the return time, place and fuel rule in writing (the booking chat counts).
+- Save the company's phone number in case you need help on the road.
+- Return the car on time and ask for a receipt or confirmation that it came back in good condition.
+
+### Conclusion
+Renting a car in Saudi Arabia is straightforward once you know what to prepare. Choose a verified company, compare vehicles side by side, ask questions in the booking chat, and inspect the car at pickup. Do that, and you can spend your energy on the trip instead of the paperwork.`,
     date: 'Fri Sep 18 2026',
+    dateFormatted: 'September 18, 2026',
     image: catEconomyImg,
-    author: 'Tariq Al-Mansoor',
+    author: 'FlyKaaba',
     readTime: '6 min read',
+    tableData: {
+      headers: ['VEHICLE', 'BEST FOR', 'TYPICAL SEATS'],
+      rows: [
+        ['Economy car', 'Solo travellers, couples, city driving', '4–5'],
+        ['Luxury sedan', 'Business trips and special occasions', '4–5'],
+        ['SUV', 'Families, longer drives, more luggage', '5–7'],
+        ['Van', 'Larger families and small groups', '7–12'],
+      ],
+    },
+    documents: [
+      'Your passport and visa or residence permit.',
+      'A valid driving licence from your home country. Whether an international driving permit is also needed depends on your licence and nationality, so check the current rules with the company you book with and with official sources before you travel.',
+      'A payment method for the booking and any security deposit the company asks for.',
+      'Your booking confirmation, saved on your phone.',
+    ],
+    checklist: [
+      'Walk around the car with the company representative and note existing scratches or dents — photograph them.',
+      'Check the fuel level, the tyres and that the air conditioning works.',
+      'Confirm the return time, place and fuel rule in writing (the booking chat counts).',
+      'Save the company\'s phone number in case you need help on the road.',
+      'Return the car on time and ask for a receipt or confirmation that it came back in good condition.',
+    ],
+    faqs: [
+      {
+        question: 'Do I need to pay when I send a booking request?',
+        answer: 'Sending a request does not charge you. Payment is currently arranged directly with the company after your booking is accepted, so agree the method with them in the booking chat.',
+      },
+      {
+        question: 'Can I cancel a booking?',
+        answer: 'Yes, from your account dashboard. The cancellation terms are shown before you confirm a booking, so read them first.',
+      },
+      {
+        question: 'Can I take the car to another city?',
+        answer: 'Often yes, but it depends on the company. Tell them your route when you book so they can confirm the terms.',
+      },
+    ],
   },
   {
     id: 'blog-2',
     title: 'Airport Transfers With a Private Driver: What to Expect',
-    slug: 'airport-transfers-with-a-private-driver',
+    slug: 'airport-transfers-with-a-private-driver-what-to-expect',
     categories: ['Airport Transfers', 'Travel Tips'],
     excerpt: 'Landing in Jeddah, Riyadh or Madinah? Here is how a pre-booked private transfer works, what to confirm beforehand and how to find your driver.',
-    content: `After a long flight from North America, Europe, or Asia, landing at King Abdulaziz International Airport (JED) or Prince Mohammad bin Abdulaziz Airport (MED) can be overwhelming with bags, Ihram garments, and family members. Pre-booking a verified private driver eliminates the taxi scrum and guarantees a calm, comfortable journey.
+    content: `After an exhausting long-haul flight into King Abdulaziz International Airport (JED) or Prince Mohammad bin Abdulaziz Airport (MED), navigating airport taxi queues with heavy bags, Ihram garments, and tired family members can be challenging. Pre-booking a verified private chauffeur ensures a seamless, serene transition directly to your hotel.
 
-How Private Chauffeur Transfers Work:
-1. Flight Tracking: Reliable drivers monitor your flight number and adjust pickup timings for gate delays or early arrivals.
-2. Meet & Greet: Your driver will stand outside customs exit arrivals holding a clear FlyKaaba sign with your name.
-3. Luggage Assistance: The chauffeur helps transport and securely load your heavy bags into spacious luggage compartments.
-4. Direct Route to Hotel: Enjoy air conditioning, chilled water, and complimentary high-speed mobile Wi-Fi all the way to your hotel lobby.
+### How Private Transfers Work with FlyKaaba
+1. **Live Flight Tracking**: Verified drivers track your flight status in real time and automatically adjust pickup times if your flight arrives early or encounters baggage delays.
+2. **Terminal Meet & Greet**: Your chauffeur waits in the arrivals hall holding an identifiable FlyKaaba placard with your name.
+3. **Luggage Handling**: Professional drivers assist with bags and load them securely into your designated vehicle.
+4. **Direct, Air-Conditioned Route**: Enjoy refreshing chilled water, onboard Wi-Fi, and a tranquil ride directly to your hotel doorstep.
 
-What to Confirm Before Arrival:
-- Share your WhatsApp number so the driver can send their live location pin.
-- Confirm passenger count and total bags so the vehicle category (Sedan vs SUV vs Van) matches your load.`,
+### Key Details to Confirm Before Departing
+- Ensure your WhatsApp number is active so your driver can send their live GPS location and vehicle license plate number before you exit customs.
+- Specify passenger count and large luggage pieces so the appropriate vehicle category (Executive Sedan, Luxury SUV, or 12-seater Van) is dispatched.`,
     date: 'Tue Sep 15 2026',
-    image: catLuxuryImg,
-    author: 'Samira Al-Zahrani',
+    image: bmw7Img,
+    author: 'FlyKaaba Editorial Team',
     readTime: '5 min read',
   },
   {
@@ -1101,20 +1171,62 @@ What to Confirm Before Arrival:
     slug: 'planning-an-suv-road-trip-in-saudi-arabia',
     categories: ['Car Rental', 'Road Trips', 'Safety & Rules'],
     excerpt: 'Long distances, hot weather and wide-open roads: how to plan the route, choose an SUV and drive safely on a Saudi road trip.',
-    content: `Saudi Arabia offers some of the most dramatic landscapes in the world — from the cloud-shrouded peaks of Taif and Abha down to the sweeping red sand dunes of the Empty Quarter and the turquoise Red Sea coast.
+    content: `From the historic UNESCO rock art in AlUla to the dramatic escarpment of the Edge of the World in Riyadh and the cool mountainous serpentine roads of Taif and Asir, Saudi Arabia is a premier road trip destination.
 
-Why Choose an SUV for Saudi Road Trips:
-- Elevated Ride Height: Better visibility on desert highways and peace of mind during occasional sand drifts.
-- Robust Tri-Zone Climate Control: Keeps all three rows cool during peak noon temperatures.
-- Space for Everyone: 7 passengers can ride comfortably with room for coolers, prayer mats, and luggage.
+### Why an SUV is Essential
+- **Ground Clearance**: Essential for navigating scenic viewpoints, unpaved heritage trails, and occasional desert sand drifts.
+- **Tri-Zone Climate Control**: Multi-zone high-output air conditioning ensures back-row passengers remain perfectly cool during daytime desert crossings.
+- **Luggage & Gear Capacity**: Generous trunk volume for extra suitcases, Zamzam water containers, coolers, and travel supplies.
 
-Road Trip Essentials:
-- Pre-download offline Google Maps or Waze, as cellular reception can fluctuate in deep mountain canyons.
-- Keep ample water and dates in the vehicle at all times.
-- Plan fuel stops whenever your gauge hits half-tank, especially along rural desert highways.`,
+### Highway Tips for Desert Driving
+- Never let your fuel tank drop below a quarter-full; service stations can be 60 to 80 km apart in remote stretches.
+- Carry bottled water, dates, and a portable tire inflator for emergency peace of mind.
+- Download offline navigation maps before setting off into dramatic mountain ranges where cellular signals can dip.`,
     date: 'Fri Sep 11 2026',
     image: catSuvImg,
-    author: 'Faisal Al-Otaibi',
+    author: 'FlyKaaba Editorial Team',
+    readTime: '7 min read',
+  },
+  {
+    id: 'blog-4',
+    title: 'Family Travel by Van: Comfort, Space and Simple Planning',
+    slug: 'family-travel-by-van-comfort-space-and-simple-planning',
+    categories: ['Family & Groups', 'Travel Tips'],
+    excerpt: 'Travelling with children, grandparents and lots of luggage? Here is why a van is often the easiest choice — and how to book the right one.',
+    content: `When travelling as an extended family for Umrah or summer holidays, splitting into multiple standard sedan taxis creates coordination headaches, higher costs, and unnecessary stress. A dedicated 7-to-14 seater passenger van keeps everyone united and comfortable throughout the journey.
+
+### Benefits of Booking a Dedicated Van
+- **Togetherness**: Grandparents, parents, and children travel together without worrying about losing sight of a second vehicle in heavy Makkah or Madinah traffic.
+- **Luggage Without Compromise**: Modern vans such as the Toyota HiAce, Hyundai Staria, or Mercedes Vito offer dedicated rear luggage bays that easily hold 8 to 12 full-sized suitcases plus strollers and wheelchairs.
+- **Cost Effective**: One van booking is significantly more affordable than paying for 3 separate taxis or multiple rideshares for every transfer and Ziyarat visit.
+
+### Booking Advice
+- Request child seats and wheelchair-accessible sliding door options in advance through FlyKaaba partner notes.
+- Clarify whether you require an hourly chauffeur for city sightseeing or a point-to-point intercity transfer.`,
+    date: 'Tue Sep 08 2026',
+    image: catVanImg,
+    author: 'FlyKaaba Editorial Team',
+    readTime: '5 min read',
+  },
+  {
+    id: 'blog-5',
+    title: 'Group Travel by Bus: Ziyarat, Events and Family Gatherings',
+    slug: 'group-travel-by-bus-for-ziyarat-and-events',
+    categories: ['Family & Groups', 'Ziyarat Travel'],
+    excerpt: 'Booking a minibus or bus for a group? How to choose the size, agree the route and keep a big group on schedule.',
+    content: `Organizing group transport for Umrah delegations, school educational trips, wedding parties, or multi-family Ziyarat excursions requires reliable scheduling and certified commercial vehicles.
+
+### Choosing the Right Coach Size
+- **Minibuses (15–23 Seats)**: Ideal for mid-sized delegations visiting sacred historical sites like Cave Hira, Mount Uhud, Masjid Quba, and the Battle of Badr.
+- **Full-Size Coaches (30–50 Seats)**: Perfect for international pilgrim groups traveling the 440 km Makkah–Madinah intercity highway with onboard restrooms and underfloor luggage holds.
+
+### Keeping Your Itinerary Smooth
+- Agree on scheduled pickup times and dedicated meeting locations outside busy hotel lobbies.
+- Ensure the transport company has active Saudi Ministry of Transport commercial operation permits for intercity transit.
+- FlyKaaba verifies all fleet licenses, vehicle insurance, and driver credentials so your group travels with complete confidence.`,
+    date: 'Fri Sep 04 2026',
+    image: catBusImg,
+    author: 'FlyKaaba Editorial Team',
     readTime: '8 min read',
   },
 ];

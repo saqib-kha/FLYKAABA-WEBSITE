@@ -72,7 +72,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center focus:outline-none cursor-pointer hover:opacity-90 transition-opacity"
           aria-label="FlyKaaba Home"
         >
-          <FlyKaabaLogo className="h-10 sm:h-11 w-auto" />
+          <FlyKaabaLogo width="154" height="40" className="w-[154px] h-[40px]" />
         </button>
 
         {/* Center: Desktop Navigation Links */}
@@ -153,15 +153,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Side: CTAs & Auth */}
         <div className="hidden md:flex items-center gap-3.5">
-          <button
-            onClick={onOpenListCompany}
-            className={`text-[14px] font-medium transition-colors cursor-pointer ${
-              activeView === 'list-company' ? 'text-[#C9A01B] font-semibold' : 'text-[#2D3139] hover:text-[#C9A01B]'
-            }`}
-          >
-            List your company
-          </button>
-
           <button
             onClick={onOpenListCompany}
             className={`text-[14px] font-medium transition-colors cursor-pointer ${

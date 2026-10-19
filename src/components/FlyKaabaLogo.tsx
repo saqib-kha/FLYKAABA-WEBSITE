@@ -2,12 +2,16 @@ import React from 'react';
 
 interface FlyKaabaLogoProps {
   className?: string;
+  width?: number | string;
+  height?: number | string;
   variant?: 'dark' | 'light';
   onClick?: () => void;
 }
 
 export const FlyKaabaLogo: React.FC<FlyKaabaLogoProps> = ({
-  className = 'h-9 w-auto',
+  className = 'w-[154px] h-[40px]',
+  width = '154',
+  height = '40',
   variant = 'dark',
   onClick,
 }) => {
@@ -22,9 +26,11 @@ export const FlyKaabaLogo: React.FC<FlyKaabaLogoProps> = ({
     >
       <svg 
         viewBox="0 0 350 88" 
+        width={width}
+        height={height}
         fill="none" 
         xmlns="http://www.w3.org/2000/svg"
-        className="h-full w-auto max-h-full overflow-visible"
+        className="w-[154px] h-[40px] max-h-full overflow-visible"
         aria-label="FlyKaaba"
       >
         <defs>

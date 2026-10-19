@@ -38,8 +38,7 @@ export const FeaturedVehiclesSection: React.FC<FeaturedVehiclesSectionProps> = (
             >
               {/* Vehicle Image */}
               <div 
-                onClick={() => onSelectVehicle(vehicle)}
-                className="relative w-full h-[180px] sm:h-[195px] bg-[#F7F6F2] overflow-hidden cursor-pointer"
+                className="relative w-full h-[180px] sm:h-[195px] bg-[#F7F6F2] overflow-hidden select-none"
               >
                 <img
                   src={vehicle.images[0]}
@@ -58,8 +57,7 @@ export const FeaturedVehiclesSection: React.FC<FeaturedVehiclesSectionProps> = (
                 <div>
                   {/* Vehicle Name */}
                   <h3 
-                    onClick={() => onSelectVehicle(vehicle)}
-                    className="font-playfair text-[#111111] text-[18px] sm:text-[19px] font-bold tracking-tight hover:text-[#C9A01B] cursor-pointer transition-colors"
+                    className="font-playfair text-[#111111] text-[18px] sm:text-[19px] font-bold tracking-tight"
                   >
                     {vehicle.name}
                   </h3>
