@@ -46,6 +46,7 @@ import { TermsConditionsPageView } from './components/TermsConditionsPageView';
 import { HowVerificationWorksPageView } from './components/HowVerificationWorksPageView';
 import { AboutUsPageView } from './components/AboutUsPageView';
 import { ContactUsPageView } from './components/ContactUsPageView';
+import { CitiesPageView } from './components/CitiesPageView';
 import { AgencyDashboardView } from './components/AgencyDashboardView';
 import { AdminDashboardView } from './components/AdminDashboardView';
 import { CustomerDashboardView } from './components/CustomerDashboardView';
@@ -109,9 +110,10 @@ export default function App() {
     return saved ? JSON.parse(saved) : { name: 'Sara', email: 'sara@example.com', role: 'Verified Traveler' };
   });
 
-  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'route-results' | 'vehicles' | 'how-it-works' | 'how-it-works-companies' | 'list-company' | 'privacy-policy' | 'brand-story' | 'terms' | 'verification' | 'about-us' | 'contact-us' | 'ziyarat-makkah' | 'ziyarat-madina' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard' | 'blogs' | 'blog-detail'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'route-results' | 'vehicles' | 'how-it-works' | 'how-it-works-companies' | 'list-company' | 'privacy-policy' | 'brand-story' | 'terms' | 'verification' | 'about-us' | 'contact-us' | 'cities' | 'ziyarat-makkah' | 'ziyarat-madina' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard' | 'blogs' | 'blog-detail'>('home');
   const [showInsForgeModal, setShowInsForgeModal] = useState(false);
   const [selectedCategoryPage, setSelectedCategoryPage] = useState<string | null>(null);
+  const [selectedCityFilter, setSelectedCityFilter] = useState<string>('Makkah');
   const [bookingVehicle, setBookingVehicle] = useState<Vehicle | null>(null);
   const [bookingRouteDetails, setBookingRouteDetails] = useState<{
     pickupCity: string;
@@ -205,7 +207,7 @@ export default function App() {
           tripType: tripType,
         });
         setActiveView('route-results');
-      } else if (view && ['home', 'agencies', 'routes', 'vehicles', 'how-it-works', 'how-it-works-companies', 'list-company', 'privacy-policy', 'brand-story', 'terms', 'verification', 'about-us', 'contact-us', 'blogs', 'blog'].includes(view)) {
+      } else if (view && ['home', 'agencies', 'routes', 'vehicles', 'how-it-works', 'how-it-works-companies', 'list-company', 'privacy-policy', 'brand-story', 'terms', 'verification', 'about-us', 'contact-us', 'cities', 'blogs', 'blog'].includes(view)) {
         if (view === 'blog') {
           const slug = urlParams.get('slug');
           const matched = BLOG_POSTS.find(p => p.slug === slug);
@@ -216,6 +218,10 @@ export default function App() {
             setActiveView('blogs');
           }
         } else {
+          if (view === 'vehicles') {
+            const cityParam = urlParams.get('city');
+            if (cityParam) setSelectedCityFilter(cityParam);
+          }
           setActiveView(view as any);
         }
         setSearchResults(null);
@@ -470,6 +476,14 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSelectCity = (cityName: string) => {
+    setSelectedCityFilter(cityName);
+    setInitialCategoryFilter('All');
+    setActiveView('vehicles');
+    window.history.pushState({ view: 'vehicles', city: cityName }, '', `?view=vehicles&city=${encodeURIComponent(cityName)}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleQuickLink = (linkTitle: string) => {
     setSelectedCategoryPage(null);
     setSelectedAgency(null);
@@ -479,7 +493,9 @@ export default function App() {
     if (linkTitle === 'Blogs') {
       handleOpenBlogs();
     } else if (linkTitle === 'Cities') {
-      handleOpenRoutes();
+      setActiveView('cities');
+      window.history.pushState({ view: 'cities' }, '', '?view=cities');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (linkTitle === 'How It Works for Customers') {
       handleOpenHowItWorks();
     } else if (linkTitle === 'How It Works for Companies') {
@@ -636,6 +652,7 @@ export default function App() {
             onBookVehicle={handleOpenVehicleBooking}
             onGoHome={handleGoHome}
             initialCategory={initialCategoryFilter}
+            initialPickupCity={selectedCityFilter}
           />
         ) : activeView === 'how-it-works' ? (
           <HowItWorksPageView
@@ -736,6 +753,21 @@ export default function App() {
           />
         ) : activeView === 'contact-us' ? (
           <ContactUsPageView
+            onGoHome={handleGoHome}
+            onViewPrivacyPolicy={() => {
+              setActiveView('privacy-policy');
+              window.history.pushState({ view: 'privacy-policy' }, '', '?view=privacy-policy');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onViewTerms={() => {
+              setActiveView('terms');
+              window.history.pushState({ view: 'terms' }, '', '?view=terms');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        ) : activeView === 'cities' ? (
+          <CitiesPageView
+            onSelectCity={handleSelectCity}
             onGoHome={handleGoHome}
           />
         ) : activeView === 'agency-dashboard' ? (

@@ -583,6 +583,53 @@ class InsForgeService {
   }
 
   // ============================================================================
+  // DATABASE: CONTACT MESSAGES
+  // ============================================================================
+
+  public async submitContactMessage(messageData: {
+    fullName: string;
+    phone?: string;
+    email: string;
+    message: string;
+  }): Promise<{ success: boolean; error?: string }> {
+    try {
+      if (this.client) {
+        const { error } = await this.client.database.from('contact_inquiries').insert([{
+          full_name: messageData.fullName,
+          phone: messageData.phone || null,
+          email: messageData.email,
+          message: messageData.message,
+          created_at: new Date().toISOString(),
+        }]);
+
+        if (error) {
+          console.warn('[InsForge DB] submitContactMessage error, falling back locally:', error);
+        } else {
+          console.info('[InsForge DB] Contact message saved successfully to InsForge');
+          return { success: true };
+        }
+      }
+    } catch (e: any) {
+      console.warn('[InsForge DB] submitContactMessage exception, storing locally:', e);
+    }
+
+    // Local fallback persistence
+    try {
+      const existing = JSON.parse(localStorage.getItem('flykaaba_contact_messages') || '[]');
+      existing.push({
+        id: 'msg-' + Date.now(),
+        ...messageData,
+        submittedAt: new Date().toISOString(),
+      });
+      localStorage.setItem('flykaaba_contact_messages', JSON.stringify(existing));
+    } catch {
+      // ignore localstorage errors
+    }
+
+    return { success: true };
+  }
+
+  // ============================================================================
   // ADMIN DASHBOARD SYNC HELPERS
   // ============================================================================
 

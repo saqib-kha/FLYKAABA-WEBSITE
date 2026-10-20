@@ -112,83 +112,98 @@ export const AboutUsPageView: React.FC<AboutUsPageViewProps> = ({
   ];
 
   return (
-    <div className="bg-[#F7F7F5] text-[#111111] font-sans selection:bg-[#C9A01B]/20 min-h-screen">
+    <div className="bg-[#FAF9F6] text-[#111111] font-sans selection:bg-[#C9A01B]/20 min-h-screen">
       
-      {/* 1. Hero Split Section matching Capture_3ff9495a.PNG */}
-      <section className="max-w-[1140px] mx-auto px-6 pt-12 sm:pt-16 pb-12 sm:pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-          
-          {/* Left Dark Card */}
-          <div className="bg-[#121417] text-white rounded-3xl p-8 sm:p-12 relative overflow-hidden flex flex-col justify-between shadow-lg">
-            <div>
-              <span className="text-xs font-bold tracking-widest text-[#C9A01B] uppercase block mb-4">
-                — OUR STORY
-              </span>
-              <h1 className="font-playfair text-4xl sm:text-5xl font-bold leading-[1.15] mb-6 text-balance">
-                Built on <span className="italic text-[#C9A01B]">Trust.</span> Driven by Service.
-              </h1>
-              <p className="text-white/80 text-sm sm:text-base leading-relaxed mb-8">
-                We started with a simple belief — that booking a vehicle or a transfer in Saudi Arabia should feel safe, clear and easy for every traveller, resident and visitor.
-              </p>
+      {/* 1. Full-width Split Hero Section exactly matching Capture.PNG */}
+      <section className="w-full grid grid-cols-1 lg:grid-cols-2 border-b border-[#EBE7DF]">
+        
+        {/* Left Dark Column with Checkerboard Pattern */}
+        <div
+          className="text-white px-8 sm:px-12 lg:px-20 py-16 sm:py-24 flex flex-col justify-between relative"
+          style={{
+            backgroundColor: '#0c0d10',
+            backgroundImage:
+              'conic-gradient(#15171c 90deg, #090a0c 90deg 180deg, #15171c 180deg 270deg, #090a0c 270deg)',
+            backgroundSize: '48px 48px',
+          }}
+        >
+          <div className="max-w-xl">
+            {/* Gold bar + OUR STORY */}
+            <div className="flex items-center gap-2.5 text-[#C9A01B] font-semibold text-xs tracking-widest uppercase mb-8">
+              <span className="w-6 h-0.5 bg-[#C9A01B]" />
+              <span>OUR STORY</span>
             </div>
 
-            <div className="pt-6 border-t border-white/10 flex items-center gap-4">
-              <span className="font-playfair text-4xl sm:text-5xl font-bold text-[#C9A01B]">
-                2026
-              </span>
-              <div>
-                <div className="text-white font-bold text-sm">Year founded</div>
-                <div className="text-white/60 text-xs">Saudi Arabia • Vehicle & transport marketplace</div>
+            {/* Headline */}
+            <h1 className="font-playfair text-4xl sm:text-5xl lg:text-[54px] font-bold text-white leading-[1.12] mb-8 tracking-tight">
+              Built on <span className="italic text-[#C9A01B]">Trust.</span> Driven<br className="hidden sm:inline" /> by Service.
+            </h1>
+
+            {/* Subtext */}
+            <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-lg mb-12">
+              We started with a simple belief — that booking a vehicle or a transfer in Saudi Arabia should feel safe, clear and easy for every traveller, resident and visitor.
+            </p>
+          </div>
+
+          {/* Year Founded */}
+          <div className="pt-8 border-t border-white/10 flex items-center gap-6 max-w-xl">
+            <span className="font-playfair text-5xl sm:text-6xl font-bold text-[#C9A01B] tracking-tight">
+              2026
+            </span>
+            <div>
+              <div className="text-white font-bold text-sm sm:text-base">Year founded</div>
+              <div className="text-white/60 text-xs sm:text-sm mt-0.5">
+                Saudi Arabia • Vehicle & transport marketplace
               </div>
             </div>
           </div>
-
-          {/* Right Mission Card */}
-          <div className="bg-white rounded-3xl border border-[#EBE7DF] p-8 sm:p-12 flex flex-col justify-between shadow-xs">
-            <div>
-              <span className="text-xs font-bold tracking-widest text-[#C9A01B] uppercase block mb-4">
-                OUR MISSION
-              </span>
-              
-              <blockquote className="border-l-4 border-[#111111] pl-6 my-6">
-                <h2 className="font-playfair text-2xl sm:text-3xl font-bold text-[#111111] leading-snug">
-                  &ldquo;To be the most trusted way to find and book vehicles and transport across Saudi Arabia.&rdquo;
-                </h2>
-              </blockquote>
-
-              <p className="text-[#4B5563] text-sm sm:text-base leading-relaxed mb-6">
-                We exist to protect customers, help honest transport companies grow, and make every journey start with confidence — not uncertainty.
-              </p>
-
-              <div className="space-y-3.5 text-xs sm:text-sm text-[#4B5563]">
-                <div className="flex items-start gap-2.5">
-                  <span className="w-2 h-2 rounded-xs bg-[#C9A01B] shrink-0 mt-1.5" />
-                  <p>
-                    <strong className="text-[#111111]">Trust first</strong> — Every company is verified before it can list a vehicle.
-                  </p>
-                </div>
-                <div className="flex items-start gap-2.5">
-                  <span className="w-2 h-2 rounded-xs bg-[#C9A01B] shrink-0 mt-1.5" />
-                  <p>
-                    <strong className="text-[#111111]">Customer protection</strong> — Clear prices, clear dates and a private chat for every booking.
-                  </p>
-                </div>
-                <div className="flex items-start gap-2.5">
-                  <span className="w-2 h-2 rounded-xs bg-[#C9A01B] shrink-0 mt-1.5" />
-                  <p>
-                    <strong className="text-[#111111]">Fair for companies</strong> — Honest companies get visibility and a simple way to manage bookings.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
         </div>
+
+        {/* Right Light Column */}
+        <div className="bg-[#FAF9F6] text-[#111111] px-8 sm:px-12 lg:px-20 py-16 sm:py-24 flex flex-col justify-between">
+          <div className="max-w-xl">
+            <div className="text-[#C9A01B] font-semibold text-xs tracking-widest uppercase mb-8">
+              OUR MISSION
+            </div>
+
+            <blockquote className="border-l-4 border-[#111111] pl-6 my-8">
+              <h2 className="font-playfair text-2xl sm:text-3xl lg:text-[34px] font-bold text-[#111111] leading-[1.25]">
+                &ldquo;To be the most trusted way to find and book vehicles and transport across Saudi Arabia.&rdquo;
+              </h2>
+            </blockquote>
+
+            <p className="text-[#4B5563] text-sm sm:text-base leading-relaxed mb-8">
+              We exist to protect customers, help honest transport companies grow, and make every journey start with confidence — not uncertainty.
+            </p>
+
+            <div className="space-y-4 text-xs sm:text-sm text-[#4B5563]">
+              <div className="flex items-start gap-3">
+                <span className="w-2 h-2 rounded-[2px] bg-[#C9A01B] shrink-0 mt-1.5" />
+                <p>
+                  <strong className="text-[#111111] font-bold">Trust first</strong> — Every company is verified before it can list a vehicle.
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="w-2 h-2 rounded-[2px] bg-[#C9A01B] shrink-0 mt-1.5" />
+                <p>
+                  <strong className="text-[#111111] font-bold">Customer protection</strong> — Clear prices, clear dates and a private chat for every booking.
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="w-2 h-2 rounded-[2px] bg-[#C9A01B] shrink-0 mt-1.5" />
+                <p>
+                  <strong className="text-[#111111] font-bold">Fair for companies</strong> — Honest companies get visibility and a simple way to manage bookings.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       {/* 2. The Story Behind Us matching Capture1_a128a345.PNG */}
-      <section className="max-w-[1140px] mx-auto px-6 py-12 sm:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <section className="max-w-[1140px] mx-auto px-6 py-16 sm:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
           {/* Left Text */}
           <div className="lg:col-span-7 space-y-6">
@@ -251,7 +266,7 @@ export const AboutUsPageView: React.FC<AboutUsPageViewProps> = ({
       </section>
 
       {/* 3. Our Core Values matching Capture2_da2421c8.PNG & Capture3_26cf3f86.PNG */}
-      <section className="max-w-[1140px] mx-auto px-6 py-12 sm:py-16">
+      <section className="max-w-[1140px] mx-auto px-6 py-16 sm:py-20 border-t border-[#EBE7DF]">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
           <div>
             <span className="text-xs font-bold tracking-widest text-[#C9A01B] uppercase block mb-2">
@@ -297,7 +312,7 @@ export const AboutUsPageView: React.FC<AboutUsPageViewProps> = ({
       </section>
 
       {/* 4. A Small Team with a Big Mission matching Capture3_26cf3f86.PNG & Capture4_b30981d9.PNG */}
-      <section className="max-w-[1140px] mx-auto px-6 py-12 sm:py-16">
+      <section className="max-w-[1140px] mx-auto px-6 py-16 sm:py-20 border-t border-[#EBE7DF]">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-[#111111] mb-4">
             A Small Team with a <span className="italic text-[#C9A01B]">Big Mission</span>
@@ -364,7 +379,7 @@ export const AboutUsPageView: React.FC<AboutUsPageViewProps> = ({
       </section>
 
       {/* 5. Our Roadmap matching Capture4_b30981d9.PNG & Capture5_1e312af4.PNG */}
-      <section className="max-w-[1140px] mx-auto px-6 py-12 sm:py-16">
+      <section className="max-w-[1140px] mx-auto px-6 py-16 sm:py-20 border-t border-[#EBE7DF]">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
           <div>
             <span className="text-xs font-bold tracking-widest text-[#C9A01B] uppercase block mb-2">
