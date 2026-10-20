@@ -40,6 +40,12 @@ import { MakkahZiyaratPageView } from './components/MakkahZiyaratPageView';
 import { MadinaZiyaratPageView } from './components/MadinaZiyaratPageView';
 import { ListCompanyPageView } from './components/ListCompanyPageView';
 import { CompanyLandingView } from './components/CompanyLandingView';
+import { PrivacyPolicyPageView } from './components/PrivacyPolicyPageView';
+import { BrandStoryPageView } from './components/BrandStoryPageView';
+import { TermsConditionsPageView } from './components/TermsConditionsPageView';
+import { HowVerificationWorksPageView } from './components/HowVerificationWorksPageView';
+import { AboutUsPageView } from './components/AboutUsPageView';
+import { ContactUsPageView } from './components/ContactUsPageView';
 import { AgencyDashboardView } from './components/AgencyDashboardView';
 import { AdminDashboardView } from './components/AdminDashboardView';
 import { CustomerDashboardView } from './components/CustomerDashboardView';
@@ -103,7 +109,7 @@ export default function App() {
     return saved ? JSON.parse(saved) : { name: 'Sara', email: 'sara@example.com', role: 'Verified Traveler' };
   });
 
-  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'route-results' | 'vehicles' | 'how-it-works' | 'ziyarat-makkah' | 'ziyarat-madina' | 'list-company' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard' | 'blogs' | 'blog-detail'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'route-results' | 'vehicles' | 'how-it-works' | 'how-it-works-companies' | 'list-company' | 'privacy-policy' | 'brand-story' | 'terms' | 'verification' | 'about-us' | 'contact-us' | 'ziyarat-makkah' | 'ziyarat-madina' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard' | 'blogs' | 'blog-detail'>('home');
   const [showInsForgeModal, setShowInsForgeModal] = useState(false);
   const [selectedCategoryPage, setSelectedCategoryPage] = useState<string | null>(null);
   const [bookingVehicle, setBookingVehicle] = useState<Vehicle | null>(null);
@@ -199,7 +205,7 @@ export default function App() {
           tripType: tripType,
         });
         setActiveView('route-results');
-      } else if (view && ['home', 'agencies', 'routes', 'vehicles', 'how-it-works', 'list-company', 'blogs', 'blog'].includes(view)) {
+      } else if (view && ['home', 'agencies', 'routes', 'vehicles', 'how-it-works', 'how-it-works-companies', 'list-company', 'privacy-policy', 'brand-story', 'terms', 'verification', 'about-us', 'contact-us', 'blogs', 'blog'].includes(view)) {
         if (view === 'blog') {
           const slug = urlParams.get('slug');
           const matched = BLOG_POSTS.find(p => p.slug === slug);
@@ -465,14 +471,43 @@ export default function App() {
   };
 
   const handleQuickLink = (linkTitle: string) => {
+    setSelectedCategoryPage(null);
+    setSelectedAgency(null);
+    setBookingVehicle(null);
+    setSearchResults(null);
+
     if (linkTitle === 'Blogs') {
       handleOpenBlogs();
     } else if (linkTitle === 'Cities') {
       handleOpenRoutes();
-    } else if (linkTitle === 'How It Works for Companies') {
-      setShowCompanyRegModal(true);
-    } else if (linkTitle === 'How It Works for Customers' || linkTitle === 'How Verification Works') {
+    } else if (linkTitle === 'How It Works for Customers') {
       handleOpenHowItWorks();
+    } else if (linkTitle === 'How It Works for Companies') {
+      handleOpenListCompany();
+    } else if (linkTitle === 'How Verification Works') {
+      setActiveView('verification');
+      window.history.pushState({ view: 'verification' }, '', '?view=verification');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (linkTitle === 'Privacy Policy') {
+      setActiveView('privacy-policy');
+      window.history.pushState({ view: 'privacy-policy' }, '', '?view=privacy-policy');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (linkTitle === 'Brand Story') {
+      setActiveView('brand-story');
+      window.history.pushState({ view: 'brand-story' }, '', '?view=brand-story');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (linkTitle === 'Terms and Conditions') {
+      setActiveView('terms');
+      window.history.pushState({ view: 'terms' }, '', '?view=terms');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (linkTitle === 'About Us') {
+      setActiveView('about-us');
+      window.history.pushState({ view: 'about-us' }, '', '?view=about-us');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (linkTitle === 'Contact Us') {
+      setActiveView('contact-us');
+      window.history.pushState({ view: 'contact-us' }, '', '?view=contact-us');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       setShowHowItWorksModal(linkTitle);
     }
@@ -633,19 +668,75 @@ export default function App() {
             allAgencies={agencies}
             allVehicles={vehicles}
           />
-        ) : activeView === 'list-company' && currentUser ? (
+        ) : activeView === 'list-company' || activeView === 'how-it-works-companies' ? (
           <CompanyLandingView
             onRegisterCompany={() => setShowCompanyRegModal(true)}
-            onSeeHowItWorks={handleOpenHowItWorks}
-          />
-        ) : activeView === 'list-company' ? (
-          <ListCompanyPageView
-            onGoHome={handleGoHome}
-            onCompanyRegistered={(companyName) => {
-              handleCompanyRegistered(companyName);
+            onSeeHowItWorks={() => {
+              setActiveView('verification');
+              window.history.pushState({ view: 'verification' }, '', '?view=verification');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            onSeeHowItWorks={handleOpenHowItWorks}
-            onOpenLogin={() => setShowAuthModal('login')}
+            onContactUs={() => {
+              setActiveView('contact-us');
+              window.history.pushState({ view: 'contact-us' }, '', '?view=contact-us');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        ) : activeView === 'privacy-policy' ? (
+          <PrivacyPolicyPageView
+            onGoHome={handleGoHome}
+            onContactUs={() => {
+              setActiveView('contact-us');
+              window.history.pushState({ view: 'contact-us' }, '', '?view=contact-us');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        ) : activeView === 'brand-story' ? (
+          <BrandStoryPageView
+            onGoHome={handleGoHome}
+            onExploreVehicles={() => handleOpenAllVehicles('All')}
+            onListCompany={handleOpenListCompany}
+            onAboutUs={() => {
+              setActiveView('about-us');
+              window.history.pushState({ view: 'about-us' }, '', '?view=about-us');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onHowVerificationWorks={() => {
+              setActiveView('verification');
+              window.history.pushState({ view: 'verification' }, '', '?view=verification');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        ) : activeView === 'terms' ? (
+          <TermsConditionsPageView
+            onGoHome={handleGoHome}
+            onContactSupport={() => {
+              setActiveView('contact-us');
+              window.history.pushState({ view: 'contact-us' }, '', '?view=contact-us');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        ) : activeView === 'verification' ? (
+          <HowVerificationWorksPageView
+            onGoHome={handleGoHome}
+            onRegisterCompany={() => setShowCompanyRegModal(true)}
+            onBrowseVehicles={() => handleOpenAllVehicles('All')}
+          />
+        ) : activeView === 'about-us' ? (
+          <AboutUsPageView
+            onGoHome={handleGoHome}
+            onExploreVehicles={() => handleOpenAllVehicles('All')}
+            onBrowseVehicles={() => handleOpenAllVehicles('All')}
+            onListCompany={handleOpenListCompany}
+            onContactUs={() => {
+              setActiveView('contact-us');
+              window.history.pushState({ view: 'contact-us' }, '', '?view=contact-us');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        ) : activeView === 'contact-us' ? (
+          <ContactUsPageView
+            onGoHome={handleGoHome}
           />
         ) : activeView === 'agency-dashboard' ? (
           <AgencyDashboardView

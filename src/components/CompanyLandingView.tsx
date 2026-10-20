@@ -12,6 +12,7 @@ import {
 interface CompanyLandingViewProps {
   onRegisterCompany: () => void;
   onSeeHowItWorks: () => void;
+  onContactUs?: () => void;
 }
 
 const benefits: { icon: LucideIcon; title: string; text: string; tile: string; color: string }[] = [
@@ -70,12 +71,13 @@ const steps = [
 export const CompanyLandingView: React.FC<CompanyLandingViewProps> = ({
   onRegisterCompany,
   onSeeHowItWorks,
+  onContactUs,
 }) => {
   return (
     <div className="bg-[#F7F7F5] text-[#111111]">
       <section className="px-6 pt-20 pb-24 text-center">
         <div className="max-w-3xl mx-auto flex flex-col items-center">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C9A01B] text-white text-sm font-semibold">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#B88722] text-white text-sm font-semibold shadow-xs">
             <span className="w-1.5 h-1.5 rounded-full bg-white/80" />
             For transport companies
           </span>
@@ -135,7 +137,7 @@ export const CompanyLandingView: React.FC<CompanyLandingViewProps> = ({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {steps.map((step, i) => (
-              <div key={step.title} className="bg-white rounded-2xl shadow-sm p-7">
+              <div key={step.title} className="bg-white rounded-2xl shadow-sm p-7 border border-gray-100">
                 <div className="w-11 h-11 rounded-full bg-[#C9A01B] text-white font-semibold flex items-center justify-center">
                   {i + 1}
                 </div>
@@ -166,12 +168,22 @@ export const CompanyLandingView: React.FC<CompanyLandingViewProps> = ({
               >
                 Register your company
               </button>
-              <a
-                href="mailto:info@flykaaba.com"
-                className="px-7 py-3.5 rounded-full bg-white/10 border border-white/20 hover:bg-white/15 text-white text-sm font-semibold transition-colors"
-              >
-                Contact us
-              </a>
+              {onContactUs ? (
+                <button
+                  type="button"
+                  onClick={onContactUs}
+                  className="px-7 py-3.5 rounded-full bg-white/10 border border-white/20 hover:bg-white/15 text-white text-sm font-semibold transition-colors cursor-pointer"
+                >
+                  Contact us
+                </button>
+              ) : (
+                <a
+                  href="mailto:info@flykaaba.com"
+                  className="px-7 py-3.5 rounded-full bg-white/10 border border-white/20 hover:bg-white/15 text-white text-sm font-semibold transition-colors"
+                >
+                  Contact us
+                </a>
+              )}
             </div>
           </div>
         </div>
