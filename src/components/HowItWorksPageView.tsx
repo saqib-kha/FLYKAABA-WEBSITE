@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { 
-  Home, 
-  ChevronRight, 
   AlertTriangle, 
   Banknote, 
   Flag, 
@@ -13,7 +11,6 @@ import {
   Car, 
   Plus, 
   Minus, 
-  ArrowLeft,
   CheckCircle2,
   X
 } from 'lucide-react';
@@ -89,32 +86,6 @@ export const HowItWorksPageView: React.FC<HowItWorksPageViewProps> = ({
 
   return (
     <div className="w-full bg-white font-sans selection:bg-[#C9A01B]/20">
-      
-      {/* 1. Header Breadcrumbs Bar */}
-      <div className="w-full bg-[#FAF7EE] border-b border-[#EAE5D9] py-3">
-        <div className="max-w-[1140px] mx-auto px-4 sm:px-6 flex items-center justify-between">
-          <nav className="flex items-center gap-1.5 text-xs text-[#6B7280]">
-            <button
-              onClick={onGoHome}
-              className="flex items-center gap-1 hover:text-[#C9A01B] transition-colors cursor-pointer"
-            >
-              <Home className="w-3.5 h-3.5" />
-              <span>Home</span>
-            </button>
-            <ChevronRight className="w-3 h-3 text-[#A0A5B1]" />
-            <span className="font-semibold text-[#111111]">How FlyKaaba Works</span>
-          </nav>
-
-          <button
-            onClick={onGoHome}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280] hover:text-[#111111] transition-colors cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Home</span>
-          </button>
-        </div>
-      </div>
-
       {/* 2. Hero Section matching Screenshot Capture.PNG */}
       <section className="w-full bg-white py-14 sm:py-20 border-b border-[#F5F2EA]">
         <div className="max-w-[1140px] mx-auto px-4 sm:px-6 text-center">
