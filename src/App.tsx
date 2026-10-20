@@ -39,6 +39,7 @@ import { RouteResultsPageView } from './components/RouteResultsPageView';
 import { MakkahZiyaratPageView } from './components/MakkahZiyaratPageView';
 import { MadinaZiyaratPageView } from './components/MadinaZiyaratPageView';
 import { ListCompanyPageView } from './components/ListCompanyPageView';
+import { CompanyLandingView } from './components/CompanyLandingView';
 import { AgencyDashboardView } from './components/AgencyDashboardView';
 import { AdminDashboardView } from './components/AdminDashboardView';
 import { CustomerDashboardView } from './components/CustomerDashboardView';
@@ -631,6 +632,11 @@ export default function App() {
             onSelectAgency={handleSelectAgency}
             allAgencies={agencies}
             allVehicles={vehicles}
+          />
+        ) : activeView === 'list-company' && currentUser ? (
+          <CompanyLandingView
+            onRegisterCompany={() => setShowCompanyRegModal(true)}
+            onSeeHowItWorks={handleOpenHowItWorks}
           />
         ) : activeView === 'list-company' ? (
           <ListCompanyPageView
