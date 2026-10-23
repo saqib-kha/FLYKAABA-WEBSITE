@@ -11,9 +11,12 @@ import {
   CheckCircle2, 
   AlertCircle,
   Phone,
-  MessageSquare
+  MessageSquare,
+  Lock,
+  UserCheck
 } from 'lucide-react';
 import { Vehicle, TravelAgency, BookingRecord, SAUDI_CITIES } from '../data/mockData';
+import { AuthModal } from './AuthModal';
 
 interface BookingFlowViewProps {
   vehicle: Vehicle;
@@ -22,6 +25,8 @@ interface BookingFlowViewProps {
   onBackToCategory: (category: string) => void;
   onConfirmBooking: (booking: BookingRecord) => void;
   currentUser?: { name: string; email: string; role: string } | null;
+  onUserLoggedIn?: (user: { name: string; email: string; role: string }) => void;
+  onRequireAuth?: (mode: 'login' | 'signup') => void;
   initialBookingDetails?: {
     pickupCity: string;
     destinationCity: string;
@@ -41,6 +46,8 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
   onBackToCategory,
   onConfirmBooking,
   currentUser,
+  onUserLoggedIn,
+  onRequireAuth,
   initialBookingDetails,
 }) => {
   // If coming directly from route search, start on Step 2 (Passenger Details & Review & Reserve)
@@ -55,12 +62,29 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
   const [dropoffCity, setDropoffCity] = useState(initialBookingDetails?.destinationCity || 'No drop-off city');
 
   // Passenger Details
-  const [customerName, setCustomerName] = useState(currentUser?.name || 'Sara');
+  const [customerName, setCustomerName] = useState(currentUser?.name || '');
   const [customerPhone, setCustomerPhone] = useState('+966 50 123 4567');
-  const [customerEmail, setCustomerEmail] = useState(currentUser?.email || 'sara@example.com');
+  const [customerEmail, setCustomerEmail] = useState(currentUser?.email || '');
   const [specialNotes, setSpecialNotes] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [confirmedBooking, setConfirmedBooking] = useState<BookingRecord | null>(null);
+  const [showLocalAuthModal, setShowLocalAuthModal] = useState<'login' | 'signup' | null>(null);
+
+  // Sync authenticated user details
+  React.useEffect(() => {
+    if (currentUser) {
+      setCustomerName(currentUser.name);
+      setCustomerEmail(currentUser.email);
+    }
+  }, [currentUser]);
+
+  const handleTriggerAuth = (mode: 'login' | 'signup') => {
+    if (onRequireAuth) {
+      onRequireAuth(mode);
+    } else {
+      setShowLocalAuthModal(mode);
+    }
+  };
 
   // Calculate days & total price
   const calculateDays = () => {
@@ -107,6 +131,15 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
   // Final confirmation
   const handleFinalReserve = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
+
+    // Strict authentication check: customer login or signup is mandatory to book
+    if (!currentUser) {
+      setErrorMessage('Login or Sign up is required to confirm this booking. Please sign in or create an account to proceed.');
+      handleTriggerAuth('login');
+      return;
+    }
+
     if (!customerName.trim() || !customerPhone.trim() || !customerEmail.trim()) {
       setErrorMessage('Please fill in all primary passenger contact fields.');
       return;
@@ -388,20 +421,20 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
                         Start Date
                       </label>
                       <div className="relative">
-                        <div className="w-full h-12 px-4 bg-white border border-[#E5E1D8] rounded-xl flex items-center gap-2.5 text-xs sm:text-sm hover:border-[#C9A01B] transition-colors cursor-pointer">
-                          <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
-                          <span className={startDate ? 'text-[#111111] font-medium' : 'text-gray-400'}>
-                            {startDate || 'Select date'}
-                          </span>
-                        </div>
                         <input
                           type="date"
                           min={todayStr}
                           value={startDate}
                           onChange={(e) => setStartDate(e.target.value)}
+                          onClick={(e) => {
+                            try {
+                              (e.currentTarget as HTMLInputElement).showPicker?.();
+                            } catch {}
+                          }}
                           required
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          className="w-full h-12 pl-10 pr-3 bg-white border border-[#E5E1D8] rounded-xl text-xs sm:text-sm text-[#111111] font-medium focus:outline-none focus:border-[#C9A01B] focus:ring-1 focus:ring-[#C9A01B] transition-all cursor-pointer"
                         />
+                        <Calendar className="w-4 h-4 text-[#C9A01B] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                       </div>
                     </div>
 
@@ -410,20 +443,20 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
                         End Date
                       </label>
                       <div className="relative">
-                        <div className="w-full h-12 px-4 bg-white border border-[#E5E1D8] rounded-xl flex items-center gap-2.5 text-xs sm:text-sm hover:border-[#C9A01B] transition-colors cursor-pointer">
-                          <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
-                          <span className={endDate ? 'text-[#111111] font-medium' : 'text-gray-400'}>
-                            {endDate || 'Select date'}
-                          </span>
-                        </div>
                         <input
                           type="date"
                           min={startDate || todayStr}
                           value={endDate}
                           onChange={(e) => setEndDate(e.target.value)}
+                          onClick={(e) => {
+                            try {
+                              (e.currentTarget as HTMLInputElement).showPicker?.();
+                            } catch {}
+                          }}
                           required
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          className="w-full h-12 pl-10 pr-3 bg-white border border-[#E5E1D8] rounded-xl text-xs sm:text-sm text-[#111111] font-medium focus:outline-none focus:border-[#C9A01B] focus:ring-1 focus:ring-[#C9A01B] transition-all cursor-pointer"
                         />
+                        <Calendar className="w-4 h-4 text-[#C9A01B] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                       </div>
                     </div>
                   </div>
@@ -435,18 +468,18 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
                         Pickup time
                       </label>
                       <div className="relative">
-                        <div className="w-full h-12 px-4 bg-white border border-[#E5E1D8] rounded-xl flex items-center justify-between text-xs sm:text-sm hover:border-[#C9A01B] transition-colors cursor-pointer">
-                          <span className={pickupTime ? 'text-[#111111] font-medium' : 'text-gray-400 font-mono tracking-wider'}>
-                            {pickupTime || '--:-- --'}
-                          </span>
-                          <Clock className="w-4 h-4 text-gray-500 shrink-0" />
-                        </div>
                         <input
                           type="time"
                           value={pickupTime}
                           onChange={(e) => setPickupTime(e.target.value)}
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          onClick={(e) => {
+                            try {
+                              (e.currentTarget as HTMLInputElement).showPicker?.();
+                            } catch {}
+                          }}
+                          className="w-full h-12 pl-10 pr-3 bg-white border border-[#E5E1D8] rounded-xl text-xs sm:text-sm text-[#111111] font-medium focus:outline-none focus:border-[#C9A01B] focus:ring-1 focus:ring-[#C9A01B] transition-all cursor-pointer"
                         />
+                        <Clock className="w-4 h-4 text-[#C9A01B] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                       </div>
                     </div>
 
@@ -455,18 +488,18 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
                         Return time
                       </label>
                       <div className="relative">
-                        <div className="w-full h-12 px-4 bg-white border border-[#E5E1D8] rounded-xl flex items-center justify-between text-xs sm:text-sm hover:border-[#C9A01B] transition-colors cursor-pointer">
-                          <span className={returnTime ? 'text-[#111111] font-medium' : 'text-gray-400 font-mono tracking-wider'}>
-                            {returnTime || '--:-- --'}
-                          </span>
-                          <Clock className="w-4 h-4 text-gray-500 shrink-0" />
-                        </div>
                         <input
                           type="time"
                           value={returnTime}
                           onChange={(e) => setReturnTime(e.target.value)}
-                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          onClick={(e) => {
+                            try {
+                              (e.currentTarget as HTMLInputElement).showPicker?.();
+                            } catch {}
+                          }}
+                          className="w-full h-12 pl-10 pr-3 bg-white border border-[#E5E1D8] rounded-xl text-xs sm:text-sm text-[#111111] font-medium focus:outline-none focus:border-[#C9A01B] focus:ring-1 focus:ring-[#C9A01B] transition-all cursor-pointer"
                         />
+                        <Clock className="w-4 h-4 text-[#C9A01B] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                       </div>
                     </div>
                   </div>
@@ -554,6 +587,62 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
                   </div>
                 )}
 
+                {/* Account Authentication Banner */}
+                {!currentUser ? (
+                  <div className="mb-5 p-4 rounded-2xl bg-[#FBF7EE] border border-[#E5E1D8] flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 shadow-xs">
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-[#C9A01B]/15 text-[#C9A01B] flex items-center justify-center shrink-0 mt-0.5">
+                        <Lock className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-bold text-[#111111] flex items-center gap-2">
+                          <span>Login or Signup Required</span>
+                          <span className="bg-[#C9A01B] text-white text-[10px] px-2 py-0.5 rounded-full font-semibold">Mandatory</span>
+                        </h4>
+                        <p className="text-[11px] sm:text-xs text-[#6B7280] mt-0.5 leading-relaxed">
+                          Please log in or create an account to finalize your booking and track your ride.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleTriggerAuth('login')}
+                        className="px-4 py-2 rounded-full border border-[#C9A01B] text-[#C9A01B] hover:bg-[#C9A01B]/10 text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        Log In
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleTriggerAuth('signup')}
+                        className="px-4 py-2 rounded-full bg-[#C9A01B] hover:bg-[#b89115] text-white text-xs font-bold transition-colors cursor-pointer shadow-xs"
+                      >
+                        Sign Up
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mb-5 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3 text-xs shadow-xs">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 font-bold text-xs">
+                        ✓
+                      </div>
+                      <div>
+                        <span className="text-emerald-900 font-medium">Verified customer: </span>
+                        <span className="text-emerald-950 font-bold">{currentUser.name}</span>
+                        <span className="text-emerald-700 ml-1">({currentUser.email})</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleTriggerAuth('login')}
+                      className="text-[11px] text-emerald-800 hover:text-emerald-950 underline font-medium cursor-pointer"
+                    >
+                      Switch Account
+                    </button>
+                  </div>
+                )}
+
                 <form onSubmit={handleFinalReserve} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
@@ -632,10 +721,15 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
                       ← Back
                     </button>
                     <button
-                      type="submit"
-                      className="px-7 py-2.5 rounded-full bg-[#C9A01B] hover:bg-[#b89115] text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+                      type={currentUser ? "submit" : "button"}
+                      onClick={!currentUser ? (e) => {
+                        e.preventDefault();
+                        handleTriggerAuth('login');
+                      } : undefined}
+                      className="px-7 py-2.5 rounded-full bg-[#C9A01B] hover:bg-[#b89115] text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer inline-flex items-center gap-2"
                     >
-                      Confirm Reservation Request
+                      {!currentUser && <Lock className="w-4 h-4 shrink-0" />}
+                      <span>{currentUser ? 'Confirm Reservation Request' : 'Login / Signup & Book'}</span>
                     </button>
                   </div>
                 </form>
@@ -706,6 +800,23 @@ export const BookingFlowView: React.FC<BookingFlowViewProps> = ({
         </div>
 
       </div>
+
+      {/* Auth Modal for Login / Signup during booking */}
+      {showLocalAuthModal && (
+        <AuthModal
+          initialMode={showLocalAuthModal}
+          onClose={() => setShowLocalAuthModal(null)}
+          onLoginSuccess={(user) => {
+            if (onUserLoggedIn) {
+              onUserLoggedIn(user);
+            }
+            setCustomerName(user.name);
+            setCustomerEmail(user.email);
+            setErrorMessage('');
+            setShowLocalAuthModal(null);
+          }}
+        />
+      )}
 
     </div>
   );

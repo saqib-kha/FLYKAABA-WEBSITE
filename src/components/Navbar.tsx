@@ -165,9 +165,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           {currentUser ? (
             <div className="flex items-center gap-3">
               <button
-                onClick={onOpenMyBookings}
-                className="text-[13px] font-semibold text-[#111111] hover:text-[#C9A01B] transition-colors"
-                title="View My Bookings"
+                onClick={onOpenCustomerDashboard || onOpenMyBookings}
+                className="text-[13px] font-semibold text-[#111111] hover:text-[#C9A01B] transition-colors cursor-pointer"
+                title="View Customer Dashboard (My Account)"
               >
                 Hi, {currentUser.name}
               </button>
@@ -294,12 +294,13 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="pt-2">
                 <button
                   onClick={() => {
-                    onOpenMyBookings();
+                    if (onOpenCustomerDashboard) onOpenCustomerDashboard();
+                    else onOpenMyBookings();
                     setMobileMenuOpen(false);
                   }}
                   className="w-full py-2 text-left text-sm text-[#111111] font-medium"
                 >
-                  My Bookings
+                  My Account / Dashboard
                 </button>
                 <button
                   onClick={() => {

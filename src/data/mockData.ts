@@ -1249,6 +1249,6 @@ export interface BookingRecord {
   customerPhone: string;
   customerEmail: string;
   specialRequests?: string;
-  status: 'Pending Confirmation' | 'Confirmed' | 'Completed';
+  status: 'Pending Confirmation' | 'Confirmed' | 'Completed' | 'Pending' | 'Cancelled';
   createdAt: string;
 }

@@ -47,6 +47,7 @@ import { HowVerificationWorksPageView } from './components/HowVerificationWorksP
 import { AboutUsPageView } from './components/AboutUsPageView';
 import { ContactUsPageView } from './components/ContactUsPageView';
 import { CitiesPageView } from './components/CitiesPageView';
+import { LoginPageView } from './components/LoginPageView';
 import { AgencyDashboardView } from './components/AgencyDashboardView';
 import { AdminDashboardView } from './components/AdminDashboardView';
 import { CustomerDashboardView } from './components/CustomerDashboardView';
@@ -107,10 +108,10 @@ export default function App() {
 
   const [currentUser, setCurrentUser] = useState<{ name: string; email: string; role: string } | null>(() => {
     const saved = localStorage.getItem('flykaaba_user');
-    return saved ? JSON.parse(saved) : { name: 'Sara', email: 'sara@example.com', role: 'Verified Traveler' };
+    return saved ? JSON.parse(saved) : null;
   });
 
-  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'route-results' | 'vehicles' | 'how-it-works' | 'how-it-works-companies' | 'list-company' | 'privacy-policy' | 'brand-story' | 'terms' | 'verification' | 'about-us' | 'contact-us' | 'cities' | 'ziyarat-makkah' | 'ziyarat-madina' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard' | 'blogs' | 'blog-detail'>('home');
+  const [activeView, setActiveView] = useState<'home' | 'agencies' | 'routes' | 'route-results' | 'vehicles' | 'how-it-works' | 'how-it-works-companies' | 'list-company' | 'privacy-policy' | 'brand-story' | 'terms' | 'verification' | 'about-us' | 'contact-us' | 'cities' | 'ziyarat-makkah' | 'ziyarat-madina' | 'agency-dashboard' | 'admin-dashboard' | 'customer-dashboard' | 'blogs' | 'blog-detail' | 'login' | 'signup'>('home');
   const [showInsForgeModal, setShowInsForgeModal] = useState(false);
   const [selectedCategoryPage, setSelectedCategoryPage] = useState<string | null>(null);
   const [selectedCityFilter, setSelectedCityFilter] = useState<string>('Makkah');
@@ -207,7 +208,7 @@ export default function App() {
           tripType: tripType,
         });
         setActiveView('route-results');
-      } else if (view && ['home', 'agencies', 'routes', 'vehicles', 'how-it-works', 'how-it-works-companies', 'list-company', 'privacy-policy', 'brand-story', 'terms', 'verification', 'about-us', 'contact-us', 'cities', 'blogs', 'blog'].includes(view)) {
+      } else if (view && ['home', 'agencies', 'routes', 'vehicles', 'how-it-works', 'how-it-works-companies', 'list-company', 'privacy-policy', 'brand-story', 'terms', 'verification', 'about-us', 'contact-us', 'cities', 'blogs', 'blog', 'login', 'signup', 'customer-dashboard'].includes(view)) {
         if (view === 'blog') {
           const slug = urlParams.get('slug');
           const matched = BLOG_POSTS.find(p => p.slug === slug);
@@ -368,6 +369,7 @@ export default function App() {
     setSelectedCategoryPage(null);
     setSelectedAgency(null);
     setBookingVehicle(null);
+    window.history.pushState({ view: 'customer-dashboard' }, '', '?view=customer-dashboard');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -533,32 +535,66 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-white text-[#111111] font-sans selection:bg-[#C9A01B]/20 selection:text-[#111111]">
       
       {/* Sticky Header / Navigation Bar matching Screenshot 1 */}
-      <Navbar
-        onOpenAgencies={handleOpenAllCompanies}
-        onOpenRoutes={handleOpenRoutes}
-        onSelectZiyarat={(z) => setSelectedZiyarat(z)}
-        onOpenMakkahZiyarat={handleOpenMakkahZiyarat}
-        onOpenMadinaZiyarat={handleOpenMadinaZiyarat}
-        onOpenListCompany={handleOpenListCompany}
-        onOpenAgencyDashboard={handleOpenAgencyDashboard}
-        onOpenAdminDashboard={handleOpenAdminDashboard}
-        onOpenCustomerDashboard={handleOpenCustomerDashboard}
-        onOpenInsForgeModal={() => setShowInsForgeModal(true)}
-        onOpenLogin={() => setShowAuthModal('login')}
-        onOpenSignup={() => setShowAuthModal('signup')}
-        currentUser={currentUser}
-        onLogout={async () => {
-          await insforgeService.signOut();
-          setCurrentUser(null);
-        }}
-        onOpenMyBookings={() => setShowMyBookingsModal(true)}
-        activeView={activeView}
-        onGoHome={handleGoHome}
-      />
+      {activeView !== 'customer-dashboard' && (
+        <Navbar
+          onOpenAgencies={handleOpenAllCompanies}
+          onOpenRoutes={handleOpenRoutes}
+          onSelectZiyarat={(z) => setSelectedZiyarat(z)}
+          onOpenMakkahZiyarat={handleOpenMakkahZiyarat}
+          onOpenMadinaZiyarat={handleOpenMadinaZiyarat}
+          onOpenListCompany={handleOpenListCompany}
+          onOpenAgencyDashboard={handleOpenAgencyDashboard}
+          onOpenAdminDashboard={handleOpenAdminDashboard}
+          onOpenCustomerDashboard={handleOpenCustomerDashboard}
+          onOpenInsForgeModal={() => setShowInsForgeModal(true)}
+          onOpenLogin={() => {
+            setActiveView('login');
+            window.history.pushState({ view: 'login' }, '', '?view=login');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onOpenSignup={() => {
+            setActiveView('signup');
+            window.history.pushState({ view: 'signup' }, '', '?view=signup');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          currentUser={currentUser}
+          onLogout={async () => {
+            await insforgeService.signOut();
+            setCurrentUser(null);
+          }}
+          onOpenMyBookings={() => setShowMyBookingsModal(true)}
+          activeView={activeView}
+          onGoHome={handleGoHome}
+        />
+      )}
 
       {/* Main Page Body */}
       <main className="flex-1">
-        {bookingVehicle ? (
+        {activeView === 'login' || activeView === 'signup' ? (
+          <LoginPageView
+            initialMode={activeView === 'signup' ? 'signup' : 'login'}
+            onGoHome={() => {
+              if (bookingVehicle) {
+                setActiveView('home');
+              } else {
+                handleGoHome();
+              }
+            }}
+            onLoginSuccess={(user) => {
+              setCurrentUser(user);
+              setActiveView('home');
+              if (!bookingVehicle) {
+                window.history.pushState({ view: 'home' }, '', '/');
+              }
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onNavigateToCompanyLogin={() => {
+              setActiveView('agency-dashboard');
+              window.history.pushState({ view: 'agency-dashboard' }, '', '?view=agency-dashboard');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        ) : bookingVehicle ? (
           <BookingFlowView
             vehicle={bookingVehicle}
             agency={agencies.find(a => a.id === bookingVehicle.companyId)}
@@ -576,6 +612,12 @@ export default function App() {
               handleConfirmBooking(booking);
             }}
             currentUser={currentUser}
+            onUserLoggedIn={(user) => setCurrentUser(user)}
+            onRequireAuth={(mode) => {
+              setActiveView(mode);
+              window.history.pushState({ view: mode }, '', `?view=${mode}`);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             initialBookingDetails={bookingRouteDetails || (searchResults ? {
               pickupCity: searchResults.pickupCity,
               destinationCity: searchResults.dropoffCity,
@@ -806,9 +848,14 @@ export default function App() {
             currentUser={currentUser}
             bookings={bookings}
             onGoHome={handleGoHome}
-            onOpenMakkahZiyarat={handleOpenMakkahZiyarat}
-            onOpenMadinaZiyarat={handleOpenMadinaZiyarat}
-            onOpenRoutes={handleOpenRoutes}
+            onLogout={async () => {
+              await insforgeService.signOut();
+              setCurrentUser(null);
+              handleGoHome();
+            }}
+            onFindVehicle={() => {
+              handleOpenAllVehicles('All');
+            }}
             onCancelBooking={handleCancelBooking}
             onOpenInsForgeModal={() => setShowInsForgeModal(true)}
           />
@@ -875,10 +922,12 @@ export default function App() {
       </main>
 
       {/* 8. Footer matching Screenshot 8 */}
-      <Footer 
-        onQuickLinkClick={handleQuickLink} 
-        onOpenInsForgeModal={() => setShowInsForgeModal(true)} 
-      />
+      {activeView !== 'customer-dashboard' && (
+        <Footer 
+          onQuickLinkClick={handleQuickLink} 
+          onOpenInsForgeModal={() => setShowInsForgeModal(true)} 
+        />
+      )}
 
       {/* ================= MODALS & ACTIVE OVERLAYS ================= */}
 
