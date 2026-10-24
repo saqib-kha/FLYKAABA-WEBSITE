@@ -1118,8 +1118,9 @@ export const CustomerDashboardView: React.FC<CustomerDashboardViewProps> = ({
                     <div
                       key={conv.id}
                       onClick={() => {
+                        setSelectedChatConv(null);
+                        setSelectedBookingDetail(conv.booking);
                         setActiveTab('bookings');
-                        setBookingFilter('Upcoming');
                       }}
                       className="w-full bg-white rounded-2xl border border-[#E5E1D8] p-5 sm:p-6 shadow-[0_1px_4px_rgba(0,0,0,0.02)] hover:border-[#C9A01B] transition-all cursor-pointer group"
                     >
