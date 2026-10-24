@@ -1117,13 +1117,10 @@ export const CustomerDashboardView: React.FC<CustomerDashboardViewProps> = ({
                   {conversations.map((conv) => (
                     <div
                       key={conv.id}
-                      onClick={() => setSelectedChatConv({
-                        id: conv.id,
-                        companyName: conv.companyName,
-                        bookingRef: conv.bookingRef,
-                        vehicleName: conv.booking.vehicleName,
-                        booking: conv.booking
-                      })}
+                      onClick={() => {
+                        setActiveTab('bookings');
+                        setBookingFilter('Upcoming');
+                      }}
                       className="w-full bg-white rounded-2xl border border-[#E5E1D8] p-5 sm:p-6 shadow-[0_1px_4px_rgba(0,0,0,0.02)] hover:border-[#C9A01B] transition-all cursor-pointer group"
                     >
                       <h3 className="font-bold text-base sm:text-lg text-[#111111] group-hover:text-[#C9A01B] transition-colors">
